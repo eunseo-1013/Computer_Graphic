@@ -23,6 +23,9 @@ float camYaw = -90.0f;
 float camPitch = 0.0f;
 float cameraSpeed = 0.05f;
 GLuint noodleTextureID;
+GLuint cupTextureID;
+GLuint greenTextureID;
+GLuint eggTextureID;
 
 void init();
 void display();
@@ -80,6 +83,75 @@ GLuint loadTexture(const char* filename) {
     return textureID;
 }
 
+void drawTexturedFlake() {
+    // ¾Õ¸é
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, 0.0f, 1.0f); // ¹ý¼± º¤ÅÍ
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+    glEnd();
+
+    // µÞ¸é
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, 0.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+    glEnd();
+
+    // À­¸é
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+    glEnd();
+
+    // ¾Æ·§¸é
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, -1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+    glEnd();
+
+    // ¿À¸¥ÂÊ ¸é
+    glBegin(GL_QUADS);
+    glNormal3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+    glEnd();
+
+    // ¿ÞÂÊ ¸é
+    glBegin(GL_QUADS);
+    glNormal3f(-1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
+    glEnd();
+}
+
+void drawEggFlake()
+{
+    GLUquadric* egg = gluNewQuadric();
+
+    gluQuadricTexture(egg, GL_TRUE);
+
+    gluCylinder(egg, 1.0f, 1.0f, 0.5f, 32, 32);  // ³³ÀÛÇÑ ¿ø±âµÕ
+    gluDisk(egg, 0.0f, 1.0f, 32, 1);               // ¾Æ·§¸é ´Ý±â
+    glTranslatef(0.0f, 0.0f, 0.5f);
+    gluDisk(egg, 0.0f, 1.0f, 32, 1);               // À­¸é ´Ý±â
+    gluDeleteQuadric(egg);
+}
+
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -103,11 +175,19 @@ int main(int argc, char** argv) {
 }
 
 void init() {
+    glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    GLfloat light_pos[] = { 1.0f, 3.0f, 3.0f, 1.0f };
+    /*GLfloat light_pos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    GLfloat light1_diffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);*/
+
+    GLfloat light_pos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -135,7 +215,22 @@ void init() {
 
     noodleTextureID = loadTexture("noodle.bmp");
     if (noodleTextureID == 0) {
-        cerr << "Failed to load texture." << endl;
+        cerr << "Failed to load noodelTexture." << endl;
+    }
+
+    cupTextureID = loadTexture("styrofoam.bmp");
+    if (cupTextureID == 0) {
+        cerr << "Failed to load cupTexture." << endl;
+    }
+
+    greenTextureID = loadTexture("green.png");
+    if (greenTextureID == 0) {
+        cerr << "Failed to load greenTexture." << endl;
+    }
+
+    eggTextureID = loadTexture("egg.png");
+    if (eggTextureID == 0) {
+        cerr << "Failed to load eggTexture." << endl;
     }
 }
 
@@ -150,31 +245,52 @@ void drawScene() {
 
     // 2. ÄÅ
     glPushMatrix();
-
     glColor3f(1.0f, 1.0f, 1.0f);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, cupTextureID);
+
     glRotatef(-90.f, 1, 0, 0);
     glTranslatef(0.0f, 0.25f, 0.051f);  // Å×ÀÌºíº¸´Ù 0.001¸¸Å­ ³ô¿©¼­ z-fighting Çö»ó ÇØ°á
     GLUquadric* cup = gluNewQuadric();
+
+    gluQuadricTexture(cup, GL_TRUE);
+
     gluCylinder(cup, 0.3f, 0.35f, 0.5f, 32, 32);
 
     // ÄÅ ¹Ù´Ú
     glColor3f(0.2f, 0.2f, 0.2f);
     gluDisk(cup, 0.0f, 0.3f, 32, 1);
 
+    // ÄÅ ¶Ñ²± ºÙÀ» °ø°£
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glTranslatef(0.0f, 0.0f, 0.5f);
+    gluCylinder(cup, 0.35f, 0.35f, 0.01f, 32, 32);
+    gluCylinder(cup, 0.37f, 0.37f, 0.01f, 32, 32);
+
+    gluDisk(cup, 0.35f, 0.37f, 32, 1);
+    glTranslatef(0.0f, 0.0f, 0.01f);
+    gluDisk(cup, 0.35f, 0.37f, 32, 1);
+
+    // ±âÁØ ¼±
+    glColor3f(0.7f, 0.7f, 0.7f);
+    glTranslatef(0.0f, 0.0f, -0.15f);
+    
+    gluCylinder(cup, 0.32f, 0.32f, 0.01f, 32, 32);
+    gluDisk(cup, 0.32f, 0.325f, 32, 1);
+    glTranslatef(0.0f, 0.0f, 0.01f);
+    gluDisk(cup, 0.32f, 0.325f, 32, 1);
+
     gluDeleteQuadric(cup);
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 
-    // 3. ±âÁØ ¼±
-    glPushMatrix();
-    glColor3f(0.5f, 0.5f, 0.5f);
+    // 3. ¸é
+    GLfloat mat_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // ±¤ÅÃ Á¦°Å
+    GLfloat mat_shininess[] = { 0.0f };
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    glRotatef(-90.f, 1, 0, 0);
-    glTranslatef(0.0f, 0.25f, 0.4f);
-
-    glutSolidTorus(0.005f, 0.329f, 16, 32);
-    glPopMatrix();
-
-    // 4. ¸é
     glPushMatrix();
     glColor3f(1.0f, 1.0f, 1.0f);
     
@@ -195,6 +311,74 @@ void drawScene() {
 
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
+
+    // 4. ½ºÇÁ
+    glPushMatrix();
+    glRotatef(-90.f, 1, 0, 0);
+    glTranslatef(0.0f, 0.25f, 0.401f);
+    // ÆÄ
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, greenTextureID);
+    
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glPushMatrix();
+    glRotatef(-25.f, 0, 0, 1);
+    glTranslatef(0.15f, -0.05f, 0.0f); 
+    glScalef(0.05f, 0.02f, 0.005f); 
+    drawTexturedFlake();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-0.1f, 0.1f, 0.001f);
+    glScalef(0.04f, 0.03f, 0.005f);
+    drawTexturedFlake();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.05f, 0.18f, 0.0f);
+    glScalef(0.04f, 0.05f, 0.005f);
+    drawTexturedFlake();
+    glPopMatrix();
+
+    // °è¶õ
+    glColor3f(1.0f, 1.0f, 0.6f); 
+    glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, eggTextureID);
+
+    glTranslatef(0.1f, 0.15f, 0.0f);
+    glScalef(0.015f, 0.015f, 0.01f);
+    drawEggFlake();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-0.15f, 0.05f, -0.002f);
+    glScalef(0.017f, 0.017f, 0.01f);
+    drawEggFlake();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0f, -0.03f, -0.0015f);
+    glScalef(0.015f, 0.015f, 0.01f);
+    drawEggFlake();
+    glPopMatrix();
+
+    // °íÃß
+    glColor3f(0.8f, 0.2f, 0.2f); 
+    glPushMatrix();
+    glTranslatef(-0.1f, -0.1f, 0.001f);
+    glScalef(0.02f, 0.03f, 0.005f);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.18f, 0.05f, 0.001f);
+    glScalef(0.03f, 0.01f, 0.005f);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
 }
 
 void display() {
@@ -205,9 +389,18 @@ void display() {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    // ÇìµåÁ¶¸í
+    /*GLfloat headlamp_pos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    glLightfv(GL_LIGHT1, GL_POSITION, headlamp_pos);*/
+
     gluLookAt(cam.eye.x, cam.eye.y, cam.eye.z,
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z);
+
+    // ÃµÀåÁ¶¸í
+   /* GLfloat world_light_pos[] = { 1.0f, 3.0f, 3.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, world_light_pos);*/
 
     drawScene();
     glutSwapBuffers();
