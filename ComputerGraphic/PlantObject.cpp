@@ -7,6 +7,10 @@
 
 #include <GL/glut.h>
 
+
+
+/*
+
 float angleX = 0.0f;  // X축 회전 각도
 float angleY = 0.0f;  // Y축 회전 각도
 int prevX, prevY;     // 이전 마우스 좌표
@@ -26,14 +30,30 @@ void Soild() { //흙 표시 <- 어케해야되..감도 안 잡힘 (일단... 원뿔로.. 위에 살짝
     GLdouble plane[] = { 0.0, 0.0, -1, 0.9 };  // mcs 기준
     glEnable(GL_CLIP_PLANE0);
     glClipPlane(GL_CLIP_PLANE0, plane);
-    //glColor3f(0.0, 0.0, 1.0); // 파랑
+    //glColor3f(0.0, 0.0, 1.0); // 파랑 (임시)
     //glColor3f(0.545f, 0.271f, 0.075f);
     glColor3f(0.4f, 0.2f, 0.05f);
     glutSolidCone(0.4,  0.1, 30, 30);
     //glutWireCone(0.4,  0.2, 30, 30);
     glDisable(GL_CLIP_PLANE0);
 }
-void TomatoLeave() {
+
+void SideMainStem(float movx,float movy) { // 가지 중 메인 가지 < - 줄기 !!!!!!!!!!!! 아직 개발 안됨
+    glPushMatrix();
+    glTranslatef(movy, 0, 0.2); 
+    glColor3f(0, 1, 0);
+    //glTranslatef();
+    glutSolidCone(0.02, movx, 30, 30);
+    //glutWireCone(size, size + 1, 30,30);
+    //glDisable(GL_CLIP_PLANE0);
+
+    glPopMatrix();
+
+}
+
+
+void TomatoLeave() { // 잎 하나 (삼각형 형태)
+    
     glColor3f(0.0f, 1.0f, 0.0f); // 초록색
     glBegin(GL_TRIANGLES);
     glVertex3f(0.0f, 0.0f, 0.0f);  // 꼭짓점 1 (밑)
@@ -42,7 +62,7 @@ void TomatoLeave() {
     glEnd();
 }
 
-void TomatoLeaves() {
+void TomatoLeaves() { // 잎 3개 
     glPushMatrix();
     glTranslatef(0.0f, 0.08f, 0.0f); // 토마토 위로 이동
     glRotatef(0, 0, 1, 0);
@@ -53,29 +73,149 @@ void TomatoLeaves() {
     TomatoLeave();
     glPopMatrix();
 
+    
+    
+
 }
 void Tomato(float r, float slice_h=30, float slice_w=30) { // 토마토 객체
     glColor3f(1.0, 0.0, 0.0); // 빨강
+    //glutWireSphere(r, slice_h, slice_w);   // Wireframe ( 임시 토마토 !)
     glutSolidSphere(r,slice_h,slice_w);  // 실Solid(속이 찬) 구 < - 조명 없어서 아직 원 처럼 보임 보류!
 
-    //glutWireSphere(r, slice_h, slice_w);   // Wireframe ( 임시 토마토 !)
+   
     TomatoLeaves();
+
 }
 
 
 
-void TomatoDisplay( float movx, float movy, int cnt = 3) { //토마토 3개 묶음
+void TomatoDisplay( float movx, float movy, int cnt = 1) { //토마토 3개 묶음
+
     glPushMatrix();
     glTranslatef(movx,movy, 0); //최초 이동만 전역 부여 그 뒤는 지역 이동
     Tomato(0.11);
-    glTranslatef(-0.04,0, -0.2);
-    Tomato(0.1);
-    if (cnt == 3) { // 3개! ( 기본 )
-        glRotatef(30, 0, -1, 0);
-        glTranslatef(0.22, 0, 0);
+    if (cnt >= 2) {
+        glTranslatef(0.12, 0.1, 0);
+        glRotatef(30, 0, 0, 1);
+ 
         Tomato(0.1);
+       
+    }
+    if (cnt == 3) { // 3개! (기본 ) // 수정 (1개 기본)
+        glTranslatef(-0.04, 0, -0.2);
+        Tomato(0.1);
+        
     }
     glPopMatrix();
+}
+
+
+// 3. Small Leaf (토마토 꼭지 또는 가지 연결부 가리기용 잎)
+void TomatoLeaf() {
+    glColor3f(0.0f, 0.5f, 0.0f); // Green
+
+    glBegin(GL_TRIANGLES);
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(0.03f, 0.0f, 0.0f);
+    glVertex3f(0.015f, 0.06f, 0.0f);
+    glEnd();
+}
+
+// 3.5. Large Main Stem Leaf (주 줄기에 붙는 큰 잎) - 제거됨.
+
+// 4. Tomato Leaves (토마토 열매 꼭지 잎)
+void TomatoCapLeaves() { // 함수명 변경: 토마토에 붙는 잎임을 명확히 함
+    glPushMatrix();
+    glTranslatef(0.0f, 0.02f, 0.0f); // Move up slightly from the sphere's top
+
+    // 3개의 작은 잎 배치
+    for (int i = 0; i < 3; ++i) {
+        glPushMatrix();
+        glRotatef(i * 120.0f, 0, 1, 0);
+        TomatoLeaf();
+        glPopMatrix();
+    }
+
+    glPopMatrix();
+}
+
+// 5. Tomato object (토마토 열매 + 꼭지)
+void Tomato(float r) {
+    // Tomato (Solid Sphere)
+    glColor3f(1.0, 0.0, 0.0); // Red
+    glutSolidSphere(r, 30, 30);
+
+    TomatoCapLeaves(); // Add cap leaves
+}
+
+
+
+// 6.5. Draw Leaves on Main Stem (주 줄기에 큰 잎 배치) - 제거됨.
+
+
+// 7. Tomato Cluster Display (토마토 묶음 배치 - 가지 및 접합부 잎 포함)
+// stem_h: Y축 줄기 높이, angle_y: Y축 회전 각도, count: 토마토 개수
+void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
+    glPushMatrix();
+
+    // 1. Global positioning (주 줄기에 위치)
+    glTranslatef(0.0f, stem_h, 0.0f);
+    glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
+
+    // 2. Move out from the trunk (가지 시작 위치)
+    float branch_start_offset = 0.045f;
+    glTranslatef(0.0f, 0.0f, branch_start_offset);
+
+    // Branch angle: Tilt up 10 degrees from horizontal
+    glRotatef(10, 1.0f, 0.0f, 0.0f);
+
+    // --- 2.1. Leaves to hide the joint (접합부 가리기용 잎) ---
+    // 토마토 묶음의 접합부는 작은 잎으로 가리는 것이 자연스러움
+    glColor3f(0.0f, 0.5f, 0.0f);
+    glPushMatrix();
+    glScalef(1.5, 1.5, 1.5); // 잎 크기 키우기
+    glRotatef(90, 0, 1, 0); // 잎을 줄기 방향으로 세우기
+    glTranslatef(0, 0.05, 0.0);
+
+    // 잎 2개를 배치하여 연결부를 자연스럽게 감싸도록 함
+    for (int i = 0; i < 2; ++i) {
+        glPushMatrix();
+        glRotatef(i * 180.0f + 45, 0, 0, 1);
+        TomatoLeaf();
+        glPopMatrix();
+    }
+    glPopMatrix();
+
+    // 3. Draw the branch stem (가지 줄기)
+    float branch_length = 0.12f;
+    glPushMatrix();
+    glColor3f(0.0f, 0.4f, 0.0f);
+    // 가지 두께: 0.02
+    gluCylinder(quad, 0.02, 0.02, branch_length, 10, 1);
+    glPopMatrix();
+
+    // 4. Tomato Cluster Group (토마토 열매 묶음)
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, branch_length);
+    glRotatef(50, 1.0f, 0.0f, 0.0f); // 아래로 처지게 회전
+
+    // T1: Primary Tomato
+    glPushMatrix();
+    Tomato(0.11);
+    glPopMatrix();
+
+    if (count >= 2) {
+        // T2: Side 1 (간격 확보)
+        glPushMatrix();
+        glTranslatef(0.08, -0.08, 0.08);
+        glRotatef(15, 0, 1, 0);
+        Tomato(0.1);
+        glPopMatrix();
+    }
+    // 토마토 개수는 최대 2개로 제한
+
+    glPopMatrix(); // End Tomato Cluster Group
+    glPopMatrix(); // End TomatoDisplay Group
 }
 
 void Stem(float r, float h ,float slice=30) {
@@ -84,8 +224,12 @@ void Stem(float r, float h ,float slice=30) {
     gluQuadricDrawStyle(quad, GLU_FILL);     // 채워진 원통
     gluCylinder(quad, r, r, h, slice, 1);
     gluDeleteQuadric(quad);
+    
+
 }
-/*
+
+
+
 void Triangle(float width = 0.1f, float height = 0.1f, float range = 0.05f, float thickness = 0.01f) {
     // 앞면 꼭짓점
     float x1 = 0, y1 = 0, z1 = thickness / 2;
@@ -167,7 +311,7 @@ void Leave(float size, float a, float b, float c) { // 식물 잎 <- 이건 어케 해야
     glPopMatrix();
 
 }
-*/
+
 
 
 
@@ -213,9 +357,8 @@ void Leave(float size, float a, float b, float c) {
     glPopMatrix();
 }
 
-//*-----------------------------------------------------------------------
 
-void DrawLeaves() {// 잎
+void DrawLeaves() { // 잎
     glPushMatrix();
     glTranslatef(0.5, 1, 0);
     glRotatef(90, 0, 0, -1); // 잎 기본 형 오른쪽 방향
@@ -224,6 +367,19 @@ void DrawLeaves() {// 잎
     Leave(0.1, 2, 1, 1);   //잎
     glPopMatrix();
 }
+
+
+void SideStem(int size=0.1) {
+    glPushMatrix();
+    glColor3f(0, 1, 0);
+    glutSolidCone(0.02, size, 30, 30);
+    //glutWireCone(size, size + 1, 30,30);
+    //glDisable(GL_CLIP_PLANE0);
+    glPopMatrix();
+
+}
+
+
 
 
 
@@ -240,20 +396,20 @@ void MyDisplay() {
     glTranslatef(0, 0.3, 0);
     glRotatef(90, 1, 0, 0);
     FlowerPot(0.45); // 화분
+    //glPopMatrix();// 테스트용 지워야 함
     glRotatef(-90, 1, 0, 0);
-    //glTranslatef(0, 0.1, 0);
+
     glRotatef(90, -1, 0, 0);
     Soild();
     glPopMatrix();
-    
-    TomatoDisplay(0.4,0.5); // 토마토
-    TomatoDisplay(0.2,1.0,2);
-    TomatoDisplay(-0.3,0.7);
+    TomatoDisplay(0.1,0.5,2); // 토마토
+    TomatoDisplay(0.1,1.0,1);
+    TomatoDisplay(-0.1,0.7,2);
     glPushMatrix();
     glRotatef(90, -1, 0, 0);
     Stem(0.02, 1.5, 30);
     glPopMatrix();
-    DrawLeaves();
+    //DrawLeaves();
     glutSwapBuffers();  // 더블 버퍼 사용 <- 자연스러운 애니메이션용!
 }
 
@@ -324,3 +480,6 @@ int main(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
+
+
+*/
