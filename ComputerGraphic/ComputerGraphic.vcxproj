@@ -133,11 +133,13 @@
   <ItemGroup>
     <ClCompile Include="cup_noodle.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="PlantObject.cpp" />
+    <ClCompile Include="water_kettle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="cup_noodle.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="water_kettle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
