@@ -3,6 +3,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+
+/*
 // 마우스 회전 관련 전역 변수
 float angleX = 0.0f;
 float angleY = 0.0f;
@@ -15,11 +17,7 @@ GLUquadric* quad = NULL;
 // ----------------------------------------------------
 // 0. 조명 및 재질 설정 함수
 // ----------------------------------------------------
-/**
- * 물체의 재질 속성을 설정합니다.
- * @param r, g, b: 기본 색상 및 Diffuse 속성
- * @param shine: 광택 강도 (0.0 ~ 128.0)
- */
+
 void setMaterial(float r, float g, float b, float shine) {
 	// Ambient: 주변광에 반응하는 색상 (Diffuse의 20%로 설정)
 	GLfloat mat_ambient[] = { r * 0.2f, g * 0.2f, b * 0.2f, 1.0f };
@@ -393,7 +391,6 @@ int main(int argc, char** argv)
 	// ----------------------------------------------------
 
 	glClearColor(0, 0, 0, 0);
-
 	if (!quad) quad = gluNewQuadric();
 
 	glutDisplayFunc(MyDisplay);
@@ -404,3 +401,5 @@ int main(int argc, char** argv)
 	glutMainLoop();
 	return 0;
 }
+
+*/

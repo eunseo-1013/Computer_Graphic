@@ -131,7 +131,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Project43\Project43\hw4.cpp" />
     <ClCompile Include="add_light_tomato_gpt.cpp" />
+    <ClCompile Include="cupObject.cpp" />
+    <ClCompile Include="hw6.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PlantObject.cpp" />
     <ClCompile Include="Tomato_dev.cpp" />
