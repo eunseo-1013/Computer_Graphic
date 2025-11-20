@@ -23,34 +23,31 @@ float camYaw = -90.0f;
 float camPitch = 0.0f;
 float cameraSpeed = 0.05f;
 
-void init();
-void display();
-void reshape(int w, int h);
-void keyboard(unsigned char key, int x, int y);
-void keyboardUp(unsigned char key, int x, int y);
-void mouseMove(int x, int y);
-void moveCamera(int value);
+void cup_object() {
+    GLUquadric* quad = gluNewQuadric();
+    gluQuadricNormals(quad, GLU_SMOOTH);
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(windowWidth, windowHeight);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Cup Ramen Master (1-Person View)");
+    glPushMatrix();
+    glRotatef(-90, 1, 0, 0);
 
-    glewInit();
-    init();
+    // --------------------------
+    // Åõ¸í À¯¸® È¿°ú
+    // --------------------------
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE);
 
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutKeyboardUpFunc(keyboardUp);
-    glutPassiveMotionFunc(mouseMove);
-    glutSetCursor(GLUT_CURSOR_NONE);
-    glutTimerFunc(16, moveCamera, 0);
+    // ÄÅ ¿Üº® (Àß¸° ¿ø»Ô)
+    gluCylinder(quad, 0.5, 0.8, 2.0, 30, 30);
 
-    glutMainLoop();
-    return 0;
+    // ÄÅ ¹Ù´Ú
+    gluDisk(quad, 0.0, 0.5, 30, 1);
+
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+
+    glPopMatrix();
+    gluDeleteQuadric(quad);
 }
 
 void init() {
@@ -102,10 +99,12 @@ void display() {
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z);
 
-    // ÄÅ¶ó¸é
-    DrawCupNoodleScene();
-    // Àü±âÆ÷Æ®
-    DrawWaterKettle(0.8f, 0.05f, -0.2f);
+    //// ÄÅ¶ó¸é
+    //DrawCupNoodleScene();
+    //// Àü±âÆ÷Æ®
+    //DrawWaterKettle(0.8f, 0.05f, -0.2f);
+
+    cup_object();
 
     glutSwapBuffers();
 }
@@ -168,4 +167,26 @@ void moveCamera(int value) {
 
     glutPostRedisplay();
     glutTimerFunc(16, moveCamera, 0);
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(windowWidth, windowHeight);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Cup Ramen Master (1-Person View)");
+
+    glewInit();
+    init();
+
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboardUp);
+    glutPassiveMotionFunc(mouseMove);
+    glutSetCursor(GLUT_CURSOR_NONE);
+    glutTimerFunc(16, moveCamera, 0);
+
+    glutMainLoop();
+    return 0;
 }
