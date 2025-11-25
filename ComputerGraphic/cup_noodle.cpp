@@ -128,6 +128,7 @@ void InitCupNoodleTextures() {
 }
 
 void DrawCupNoodleScene() {
+    glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     // 1. Å×ÀÌºí
     glPushMatrix();
     glColor3f(0.5f, 0.35f, 0.05f);
@@ -271,4 +272,5 @@ void DrawCupNoodleScene() {
     glPopMatrix();
 
     glPopMatrix();
+    glPopAttrib();
 }

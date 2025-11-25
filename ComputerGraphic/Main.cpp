@@ -99,12 +99,12 @@ void display() {
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z);
 
-    //// 컵라면
+    // 컵라면
     //DrawCupNoodleScene();
-    //// 전기포트
-    //DrawWaterKettle(0.8f, 0.05f, -0.2f);
+    // 물통
+    DrawWaterKettle(0.8f, 0.05f, -0.2f);
 
-    cup_object();
+    //cup_object();
 
     glutSwapBuffers();
 }
