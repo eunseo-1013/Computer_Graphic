@@ -14,10 +14,10 @@ void DrawWaterKettle(float x, float y, float z) {
     glColor3f(0.2f, 0.2f, 0.2f);
     glPushMatrix();
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    gluCylinder(quad, 0.2f, 0.2f, 0.02f, 32, 32); // 받침대
-    gluDisk(quad, 0.0f, 0.2f, 32, 1);             // 바닥
+    gluCylinder(quad, 0.21f, 0.21f, 0.02f, 32, 32); // 받침대
+    gluDisk(quad, 0.0f, 0.21f, 32, 1);             // 바닥
     glTranslatef(0.0f, 0.0f, 0.02f);
-    gluDisk(quad, 0.0f, 0.2f, 32, 1);             // 윗면
+    gluDisk(quad, 0.0f, 0.21f, 32, 1);             // 윗면
     glPopMatrix();
 
     // 2. 물
@@ -28,7 +28,7 @@ void DrawWaterKettle(float x, float y, float z) {
     glPushMatrix();
     glTranslatef(0.0f, 0.03f, 0.0f); // 받침대 위로 살짝 띄움
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    gluCylinder(quad, 0.2f, 0.17f, 0.6f, 32, 32); // 물 높이
+    gluCylinder(quad, 0.19f, 0.17f, 0.6f, 32, 32); // 물 높이
     glPopMatrix();
 
     // 3. 유리 몸통
