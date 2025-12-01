@@ -22,6 +22,10 @@ float lastY = windowHeight / 2.0;
 float camYaw = -90.0f;
 float camPitch = 0.0f;
 float cameraSpeed = 0.05f;
+float kettleAngle = 0.0f;
+float waterTime = 0.0f;
+float kettleLift = 0.0f;
+bool kettleSelected = false;
 
 void cup_object() {
     GLUquadric* quad = gluNewQuadric();
@@ -84,6 +88,48 @@ void init() {
 
     // 컵라면 객체 텍스처 로드 
     InitCupNoodleTextures();
+    // 물병 물 텍스처
+    InitWaterKettleTextures();
+}
+
+void DrawCrosshair()
+{
+    float cx = windowWidth / 2.0f;
+    float cy = windowHeight / 2.0f;
+    float radius = 2.0f;   // 점 크기 (픽셀 단위)
+    int segments = 32;     // 원 부드럽게
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, windowWidth, 0, windowHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+
+    glColor3f(0.0f, .0f, .0f); // 흰색 원
+
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy);  // 중심
+    for (int i = 0; i <= segments; i++) {
+        float angle = i * 2.0f * 3.1415926f / segments;
+        float x = cx + cos(angle) * radius;
+        float y = cy + sin(angle) * radius;
+        glVertex2f(x, y);
+    }
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void display() {
@@ -98,13 +144,18 @@ void display() {
     gluLookAt(cam.eye.x, cam.eye.y, cam.eye.z,
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z);
+    static float t = 0.0f;
+    t += 0.01f;
+    waterTime = t;
 
     // 컵라면
-    //DrawCupNoodleScene();
+    DrawCupNoodleScene();
+    UpdateWaterKettle();
     // 물통
-    DrawWaterKettle(0.8f, 0.05f, -0.2f);
+    DrawWaterKettle(0.8f, 0.05f + kettleLift, -0.2f, waterTime, kettleAngle);
 
     //cup_object();
+    DrawCrosshair();
 
     glutSwapBuffers();
 }
@@ -120,8 +171,33 @@ void keyboard(unsigned char key, int x, int y) {
     keys[key] = true;
 }
 
+void specialKeys(int key, int x, int y) {
+    if (key == GLUT_KEY_LEFT) {
+        kettleAngle += 1.5f;
+        if (kettleAngle > 80.0f) kettleAngle = 80.0f;
+    }
+
+    if (key == GLUT_KEY_RIGHT) {
+        kettleAngle -= 1.5f;
+        if (kettleAngle < 0.0f) kettleAngle = 0.0f;
+    }
+    glutPostRedisplay();
+}
+
 void keyboardUp(unsigned char key, int x, int y) {
     keys[key] = false;
+}
+
+void mouseClick(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        if (x > windowWidth * 0.55f && x < windowWidth * 0.85f &&
+            y > windowHeight * 0.5f && y < windowHeight * 0.9f)
+        {
+            kettleSelected = !kettleSelected; // 토글
+        }
+    }
 }
 
 void mouseMove(int x, int y) {
@@ -183,6 +259,8 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardUp);
+    glutSpecialFunc(specialKeys);
+    glutMouseFunc(mouseClick);
     glutPassiveMotionFunc(mouseMove);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutTimerFunc(16, moveCamera, 0);

@@ -1,10 +1,45 @@
 #include "water_kettle.h"
 #include <iostream>
+#include "glaux.h"
+#include <algorithm>
 
-void DrawWaterKettle(float x, float y, float z) {
+GLuint waterTextureID = -1;
+
+void loadTexture(void) {
+	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "water.bmp" );
+
+    if( pTextureImage != NULL ) {
+        glGenTextures( 1, &waterTextureID );   // 1: 로드할 텍스쳐 1개를 g_textureID에 저장
+
+		glBindTexture( GL_TEXTURE_2D, waterTextureID );
+
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+		glTexImage2D( GL_TEXTURE_2D, 0, 3, pTextureImage->sizeX, pTextureImage->sizeY, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, pTextureImage->data );    // 0: mipmap단계, 원본 사용하겠다 3: RGB
+	}
+
+	if( pTextureImage ) {
+		if( pTextureImage->data )
+			free( pTextureImage->data );
+
+		free( pTextureImage );
+	}
+}
+
+void InitWaterKettleTextures() {
+    loadTexture();
+    if (waterTextureID == 0) {
+        std::cerr << "Failed to load water texture (GLAUX)" << std::endl;
+    }
+}
+
+void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
 	glPushMatrix();
 	glTranslatef(x, y, z);
+    glRotatef(tiltAngle, 0, 0, 1);
 
 	glScalef(0.7f, 0.7f, 0.7f);
 
@@ -24,19 +59,55 @@ void DrawWaterKettle(float x, float y, float z) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, waterTextureID);
+    gluQuadricTexture(quad, GL_TRUE);
+
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glTranslatef(time * 0.05f, time * 0.03f, 0.0f);  // 흐르는 물처럼 보임
+    glMatrixMode(GL_MODELVIEW);
+
     glColor4f(0.4f, 0.6f, 1.0f, 0.5f);
     glPushMatrix();
     glTranslatef(0.0f, 0.03f, 0.0f); // 받침대 위로 살짝 띄움
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    gluCylinder(quad, 0.19f, 0.17f, 0.6f, 32, 32); // 물 높이
+    gluCylinder(quad, 0.18f, 0.16f, 0.6f, 32, 32); // 물 높이
+    glTranslatef(0, 0, 0.6f);
+    gluDisk(quad, 0.0f, 0.16f, 32, 1);
+    glTranslatef(0, 0, -0.6f);
+    gluDisk(quad, 0.0f, 0.18f, 32, 1);
+
     glPopMatrix();
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    glDisable(GL_TEXTURE_2D);
 
     // 3. 유리 몸통
+    GLfloat glass_diffuse[] = { 0.3f, 0.3f, 0.35f, 0.2f };
+    GLfloat glass_specular[] = { 0.9f, 0.9f, 1.0f, 0.6f };
+    GLfloat glass_ambient[] = { 0.1f, 0.1f, 0.1f, 0.2f };
+    GLfloat glass_shine = 100.0f;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, glass_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, glass_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, glass_specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, glass_shine);
+
     glColor4f(0.9f, 0.95f, 1.0f, 0.2f);
     glPushMatrix();
     glTranslatef(0.0f, 0.02f, 0.0f); 
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+
+    // 외곽 유리
     gluCylinder(quad, 0.2f, 0.17f, 0.73f, 32, 32);
+    
+    // 내부 유리 (두께)
+    gluCylinder(quad, 0.19f, 0.16f, 0.73f, 32, 32);
+
     glPopMatrix();
 
     glDepthMask(GL_TRUE);
@@ -93,7 +164,7 @@ void DrawWaterKettle(float x, float y, float z) {
     glPushMatrix();
 
     glTranslatef(0.185f, 0.385f, 0.0f);
-    glRotatef(2.5f, 0, 0, 1);
+    glRotatef(2.4f, 0, 0, 1);
 
     glScalef(0.001f, 0.73f, 0.05f);
     glutSolidCube(1.0f);
@@ -102,4 +173,15 @@ void DrawWaterKettle(float x, float y, float z) {
 
     glPopMatrix();
     glPopAttrib();
+}
+
+void UpdateWaterKettle()
+{
+    waterTime += 0.01f;
+
+    // 선택된 상태라면 위로
+    if (kettleSelected)
+        kettleLift = std::min(0.3f, kettleLift + 0.02f);
+    else
+        kettleLift = std::max(0.0f, kettleLift - 0.02f);
 }
