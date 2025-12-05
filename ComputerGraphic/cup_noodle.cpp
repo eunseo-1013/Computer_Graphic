@@ -129,6 +129,12 @@ void InitCupNoodleTextures() {
 
 void DrawCupNoodleScene() {
     glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
+    
+    glDisable(GL_TEXTURE_2D);
+
+    glPushMatrix();
+    glTranslatef(0.0f, 8.8f, 0.0f);
+
     // 1. 테이블
     glPushMatrix();
     glColor3f(0.5f, 0.35f, 0.05f);
@@ -205,9 +211,12 @@ void DrawCupNoodleScene() {
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 
+    glPopMatrix();
+
     // 4. 스프
     glPushMatrix();
     glRotatef(-90.f, 1, 0, 0);
+    glTranslatef(0.0f, 0.0f, 8.8f);
     glTranslatef(0.0f, 0.25f, 0.401f);
 
     // 파
@@ -272,5 +281,6 @@ void DrawCupNoodleScene() {
     glPopMatrix();
 
     glPopMatrix();
+    //glPopMatrix();
     glPopAttrib();
 }

@@ -87,9 +87,9 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glDisable(GL_TEXTURE_2D);
 
     // 3. À¯¸® ¸öÅë
-    GLfloat glass_diffuse[] = { 0.3f, 0.3f, 0.35f, 0.2f };
-    GLfloat glass_specular[] = { 0.9f, 0.9f, 1.0f, 0.6f };
-    GLfloat glass_ambient[] = { 0.1f, 0.1f, 0.1f, 0.2f };
+    GLfloat glass_diffuse[] = { 0.7f, 0.9f, 1.0f, 0.6f };
+    GLfloat glass_specular[] = { 1.0f, 1.0f, 1.0f, 0.3f };
+    GLfloat glass_ambient[] = { 0.1f, 0.1f, 0.1f, 0.3f };
     GLfloat glass_shine = 100.0f;
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, glass_ambient);
@@ -97,7 +97,10 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glMaterialfv(GL_FRONT, GL_SPECULAR, glass_specular);
     glMaterialf(GL_FRONT, GL_SHININESS, glass_shine);
 
-    glColor4f(0.9f, 0.95f, 1.0f, 0.2f);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glColor4f(1, 1, 1, 0.15f);
     glPushMatrix();
     glTranslatef(0.0f, 0.02f, 0.0f); 
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -127,7 +130,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glColor3f(0.1f, 0.1f, 0.1f);
     glPushMatrix();
     glTranslatef(-0.1f, 0.79f, 0.0f);  // ¶Ñ²± ¿ÞÂÊ
-    glRotatef(-90, 0, 1, 0);
+    glRotatef(-90.0f, 0.0f, 1.f, 0.0f);
     
     gluCylinder(quad, 0.04f, 0.01f, 0.10f, 16, 16);  // ³¡ (»ÏÁ·)
 
@@ -170,7 +173,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glutSolidCube(1.0f);
 
     glPopMatrix();
-
+  
     glPopMatrix();
     glPopAttrib();
 }
