@@ -2,8 +2,27 @@
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+//#include "Camera.h"
+#include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+/*
+camera cam;
+using namespace glm;
+using namespace std;
 
-/**
+int windowWidth = 1280;
+int windowHeight = 720;
+bool keys[256];
+
+bool firstMouse = true;
+float lastX = windowWidth / 2.0;
+float lastY = windowHeight / 2.0;
+float camYaw = -90.0f;
+float camPitch = 0.0f;
+float cameraSpeed = 0.05f;
+
 
 // 마우스 회전 관련 전역 변수
 float angleX = 0.0f;
@@ -83,6 +102,7 @@ void cup_object() {
 // --------------------------
 // 디스플레이 콜백
 // --------------------------
+/*
 void MyDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -102,6 +122,30 @@ void MyDisplay() {
     glutSwapBuffers();
 }
 
+void MyDisplay(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    /*
+    gluLookAt(cam.eye.x, cam.eye.y, cam.eye.z,
+        cam.at.x, cam.at.y, cam.at.z,
+        cam.up.x, cam.up.y, cam.up.z);
+        
+    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+
+    glPushMatrix();
+    glTranslatef(0, -1.0, 0); // 컵 위치 조정
+    cup_object();
+    glPopMatrix();
+
+    glutSwapBuffers();
+}
+
+
 // --------------------------
 // 리쉐이프 콜백
 // --------------------------
@@ -115,6 +159,7 @@ void MyReshape(int w, int h) {
 // --------------------------
 // 마우스
 // --------------------------
+/*
 void Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
@@ -124,17 +169,20 @@ void Mouse(int button, int state, int x, int y) {
         }
         else {
             isDragging = false;
+           
         }
     }
+
+ 
 }
 
 void Motion(int x, int y) {
-    if (isDragging) {
+    if (!isDragging) {
         int dx = x - prevX;
         int dy = y - prevY;
 
-        angleY += dx * 0.5f;
-        angleX += dy * 0.5f;
+        angleY += dx * 0.2f;
+        angleX += dy * 0.2f;
 
         if (angleX > 360.0f) angleX -= 360.0f;
         if (angleX < -360.0f) angleX += 360.0f;
@@ -145,6 +193,62 @@ void Motion(int x, int y) {
         prevY = y;
         glutPostRedisplay();
     }
+}
+*/
+/*
+
+void mouseMove(int x, int y) {
+    if (firstMouse) {
+        lastX = x;
+        lastY = y;
+        firstMouse = false;
+    }
+
+    float xoffset = x - lastX;
+    float yoffset = lastY - y;
+    lastX = x;
+    lastY = y;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    camYaw += xoffset;
+    camPitch += yoffset;
+    if (camPitch > 89.0f) camPitch = 89.0f;
+    if (camPitch < -89.0f) camPitch = -89.0f;
+
+    vec3 dir;
+    dir.x = cos(radians(camYaw)) * cos(radians(camPitch));
+    dir.y = sin(radians(camPitch));
+    dir.z = sin(radians(camYaw)) * cos(radians(camPitch));
+
+    cam.at = cam.eye + normalize(dir);
+    cam.UpdateCamera();
+}
+
+void moveCamera(int value) {
+    vec3 forward = normalize(cam.at - cam.eye);
+    vec3 right = normalize(cross(forward, cam.up));
+
+    if (keys['w']) cam.MoveCamera(forward * cameraSpeed);
+    if (keys['s']) cam.MoveCamera(-forward * cameraSpeed);
+    if (keys['a']) cam.MoveCamera(-right * cameraSpeed);
+    if (keys['d']) cam.MoveCamera(right * cameraSpeed);
+    if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
+    if (keys['c']) cam.MoveCamera(-cam.up * cameraSpeed);
+
+    glutPostRedisplay();
+    glutTimerFunc(16, moveCamera, 0);
+}
+
+void keyboard(unsigned char key, int x, int y) {
+    if (key == 27) glutLeaveMainLoop();
+    keys[key] = true;
+}
+
+void keyboardUp(unsigned char key, int x, int y) {
+    keys[key] = false;
 }
 
 // --------------------------
@@ -159,18 +263,24 @@ int main(int argc, char** argv) {
     quad = gluNewQuadric();
 
     // 배경 어둡게
-    glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+    glClearColor(1,1 , 1, 1);
 
     initLighting();
 
     glutDisplayFunc(MyDisplay);
     glutReshapeFunc(MyReshape);
-    glutMouseFunc(Mouse);
-    glutMotionFunc(Motion);
+    //glutMouseFunc(Mouse);
+    //glutMotionFunc(Motion);
+    glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboardUp);
+    glutPassiveMotionFunc(mouseMove);
+    glutTimerFunc(16, moveCamera, 0);
 
     glutMainLoop();
 
     if (quad) gluDeleteQuadric(quad);
     return 0;
 }
+
+
 */

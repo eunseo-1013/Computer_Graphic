@@ -1,358 +1,706 @@
-﻿#include <GL/glew.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <stdio.h>
+#include <math.h>
+#include "glaux.h"
+
+//------------------------------
+// 조명 설정
+//------------------------------
+void SetupLighting()
+{
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_NORMALIZE);          // 스케일 변형해도 노멀 자동 보정
+    glEnable(GL_COLOR_MATERIAL);     // glColor로 재질 색 조절
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    // 화면 전체 기본 밝기
+    GLfloat globalAmbient[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+    // 태양 느낌의 따뜻한 흰빛
+    GLfloat lightAmbient[] = { 0.4f, 0.4f, 0.35f, 1.0f };
+    GLfloat lightDiffuse[] = { 1.0f, 0.98f, 0.90f, 1.0f };
+    GLfloat lightSpecular[] = { 1.0f, 1.0f, 0.95f, 1.0f };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+}
+
+//------------------------------
+// 텍스처 전역 변수
+//------------------------------
+GLuint gLeafTex = 0; // 잎 텍스처 번호
+GLuint gSoilTex = 0; // 흙 텍스처 번호
+GLuint gStemTex = 0;
+GLuint gTomatoTex = 0;
 
 
+AUX_RGBImageRec* LoadBMP(const char* filename)
+{
+    FILE* file = NULL;
+    if (!filename) return NULL;
 
-/*
+    printf("LoadBMP 시도 중: [%s]\n", filename);
+
+    file = fopen(filename, "rb");
+    if (!file) {
+        printf("fopen 실패! 파일 없음: %s\n", filename);
+        return NULL;
+    }
+    fclose(file);
+
+    printf("auxDIBImageLoad 호출!\n");
+    return auxDIBImageLoad(filename);
+}
+
+bool LoadLeafTexture(const char* filename)
+{
+    AUX_RGBImageRec* img = LoadBMP(filename);
+    if (!img) {
+        printf("텍스처 파일을 읽을 수 없음: %s\n", filename);
+        return false;
+    }
+
+    printf("텍스처 로드 성공: %s (%d x %d)\n",
+        filename, (int)img->sizeX, (int)img->sizeY);
+
+    glGenTextures(1, &gLeafTex);
+    glBindTexture(GL_TEXTURE_2D, gLeafTex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        img->sizeX,
+        img->sizeY,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img->data
+    );
+
+    printf("loadleaf 함수 성공적 종료\n");
+    return true;
+}
 
 
-// 마우스 회전 관련 전역 변수
+bool LoadStemTexture(const char* filename)
+{
+    AUX_RGBImageRec* img = LoadBMP(filename);
+    if (!img) {
+        printf("텍스처 파일을 읽을 수 없음: %s\n", filename);
+        return false;
+    }
+
+    printf("텍스처 로드 성공: %s (%d x %d)\n",
+        filename, (int)img->sizeX, (int)img->sizeY);
+
+    glGenTextures(1, &gStemTex);
+    glBindTexture(GL_TEXTURE_2D, gStemTex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        img->sizeX,
+        img->sizeY,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img->data
+    );
+
+    printf("loadleaf 함수 성공적 종료\n");
+    return true;
+}
+
+bool LoadSoilTexture(const char* filename)
+{
+    AUX_RGBImageRec* img = LoadBMP(filename);
+    if (!img) {
+        printf("흙 텍스처 파일을 읽을 수 없음: %s\n", filename);
+        return false;
+    }
+
+    printf("흙 텍스처 로드 성공: %s (%d x %d)\n",
+        filename, (int)img->sizeX, (int)img->sizeY);
+
+    glGenTextures(1, &gSoilTex);
+    glBindTexture(GL_TEXTURE_2D, gSoilTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        img->sizeX,
+        img->sizeY,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img->data
+    );
+
+    printf("흙 텍스처 OpenGL 업로드까지 정상 완료\n");
+    return true;
+}
+
+
+bool LoadTomatoTexture(const char* filename)
+{
+    AUX_RGBImageRec* img = LoadBMP(filename);
+    if (!img) {
+        printf("흙 텍스처 파일을 읽을 수 없음: %s\n", filename);
+        return false;
+    }
+
+    printf("토마토 텍스처 로드 성공 : % s(% d x % d)\n",
+        filename, (int)img->sizeX, (int)img->sizeY);
+
+    glGenTextures(1, &gTomatoTex);
+    glBindTexture(GL_TEXTURE_2D, gTomatoTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        img->sizeX,
+        img->sizeY,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img->data
+    );
+
+    printf("토마토 택스쳐 OpenGL 업로드까지 정상 완료\n");
+    return true;
+}
+
+//------------------------------
+// 마우스 회전 관련
+//------------------------------
 float angleX = 0.0f;
 float angleY = 0.0f;
 int prevX, prevY;
 bool isDragging = false;
 
-// GLU Quadric object declaration
+// GLU Quadric
 GLUquadric* quad = NULL;
 
-//---------------------------------------------------------
+//------------------------------
 // 1. 화분 및 흙
-//---------------------------------------------------------
+//------------------------------
 
 void FlowerPot(float size) {
-	GLdouble plane[] = { 0.0, 0.0, -1, 0.7 };
-	glEnable(GL_CLIP_PLANE0);
-	glClipPlane(GL_CLIP_PLANE0, plane);
-	glColor3f(0.545f, 0.271f, 0.075f); // 화분 갈색
-	glutSolidCone(size, size + 1, 30, 30);
-	glDisable(GL_CLIP_PLANE0);
+    
+
+
+
+    /**** 조명 *****/
+    // ----- 0. 조명 상태 백업 -----
+    GLfloat oldAmb[4], oldDiff[4], oldSpec[4];
+    glGetLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
+    glGetLightfv(GL_LIGHT0, GL_DIFFUSE, oldDiff);
+    glGetLightfv(GL_LIGHT0, GL_SPECULAR, oldSpec);
+
+    GLfloat potAmb[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat potDiff[] = { 0.9f, 0.9f, 0.9f, 1.0f }; // 살짝 줄임
+    GLfloat potSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, potAmb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, potDiff);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, potSpec);
+
+    // ----- 2. 화분 재질 설정 (specular 0, 하이라이트 없음) -----
+    glDisable(GL_COLOR_MATERIAL);    // glColor 영향 끄고 재질로만 색 지정
+
+    GLfloat matAmb[] = { 0.30f, 0.18f, 0.10f, 1.0f }; // 어두운 갈색
+    GLfloat matDiff[] = { 0.50f, 0.30f, 0.16f, 1.0f }; // 본 색
+    GLfloat matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };    // 반짝임 없음
+    GLfloat matShine[] = { 1.0f };
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmb);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiff);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpec);
+    glMaterialfv(GL_FRONT, GL_SHININESS, matShine);
+    GLdouble plane[] = { 0.0, 0.0, -1, 0.7 };
+    glEnable(GL_CLIP_PLANE0);
+    glClipPlane(GL_CLIP_PLANE0, plane);
+    glColor3f(0.7f, 0.4f, 0.2f); // 밝은 화분 갈색
+    glutSolidCone(size, size + 1, 30, 30);
+    glDisable(GL_CLIP_PLANE0);
+    if (!quad)
+        quad = gluNewQuadric();
+
+    glPushMatrix();
+   // glColor3f(0.6f, 0.3f, 0.2f);
+    // SolidCone 높이 = size + 1
+    float topZ = (size) * 0.10f; // ← 클립된 상단 실제 위치에 맞춰 보정
+
+    glTranslatef(0, 0, -topZ);
+
+    float rimH = 0.15f;
+    float rimOuter = size * 1.0f;
+    float rimInner = size * 0.01f;
+
+    // Outer rim
+    gluCylinder(quad, rimOuter, rimOuter, rimH, 30, 1);
+
+    // Inner rim
+    gluCylinder(quad, rimInner, rimInner, rimH, 30, 1);
+
+    glPopMatrix();
+
+
+     // 아래쪽 링
+
+    glPushMatrix();
+    //glColor3f(0.6f, 0.3f, 0.2f);
+    // SolidCone 높이 = size + 1
+    topZ = (size) * 0.67f; // ← 클립된 상단 실제 위치에 맞춰 보정
+
+    glTranslatef(0, 0, topZ*2);
+
+     rimH = 0.1f;
+     rimOuter = size * 0.55f;
+     rimInner = size * 0.01f;
+
+    // Outer rim
+    gluCylinder(quad, rimOuter, rimOuter, rimH, 30, 1);
+
+    // Inner rim
+    gluCylinder(quad, rimInner, rimInner, rimH, 30, 1);
+
+    glPopMatrix();
+    // ----- 4. 상태 원복 -----
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3f(1.0f, 1.0f, 1.0f); // 다음 물체에 색 안 묻도록
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, oldDiff);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, oldSpec);
 }
 
 void Soild() {
-	GLdouble plane[] = { 0.0, 0.0, -1, 0.9 };
-	glEnable(GL_CLIP_PLANE0);
-	glClipPlane(GL_CLIP_PLANE0, plane);
-	glColor3f(0.4f, 0.2f, 0.05f); // 흙 색상
-	glutSolidCone(0.4, 0.1, 30, 30);
-	glDisable(GL_CLIP_PLANE0);
+    // 텍스처 없으면 색만
+    if (gSoilTex == 0) {
+        GLdouble plane[] = { 0.0, 0.0, -1, 0.9 };
+        glEnable(GL_CLIP_PLANE0);
+        glClipPlane(GL_CLIP_PLANE0, plane);
+        glColor3f(0.55f, 0.35f, 0.18f); // 조금 밝은 흙색
+        glutSolidCone(0.4, 0.1, 30, 30);
+        glDisable(GL_CLIP_PLANE0);
+        return;
+    }
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gSoilTex);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    float radius = 0.40f;
+    int   slices = 40;
+    float z = 0.01f;
+
+    glBegin(GL_TRIANGLE_FAN);
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.5f, 0.5f);
+    glVertex3f(0.0f, 0.0f, z);
+
+    for (int i = 0; i <= slices; ++i) {
+        float theta = (float)i / (float)slices * 2.0f * 3.14159265f;
+        float x = radius * cosf(theta);
+        float y = radius * sinf(theta);
+
+        float u = 0.5f + 0.5f * cosf(theta);
+        float v = 0.5f + 0.5f * sinf(theta);
+
+        glTexCoord2f(u, v);
+        glVertex3f(x, y, z);
+    }
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
 }
 
-//---------------------------------------------------------
+//------------------------------
 // 2. 줄기 및 잎
-//---------------------------------------------------------
-
+//------------------------------
 void Stem(float r, float h, float slice = 30) {
-	if (!quad) quad = gluNewQuadric();
-	glColor3f(0.0f, 0.6f, 0.0f); // 줄기 색
-	gluQuadricDrawStyle(quad, GLU_FILL);
-	gluCylinder(quad, r, r, h, slice, 1);
+    if (!quad) {
+        quad = gluNewQuadric();
+        gluQuadricNormals(quad, GLU_SMOOTH);   // 조명용 노멀
+    }
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gStemTex);    // 줄기 텍스처
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    // 텍스처가 원통 전체에 꽉 차게 / 반복되게
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // ★ 여기서 꼭 켜야 GLU가 텍스처 좌표를 만들어 줌
+    gluQuadricTexture(quad, GL_TRUE);
+
+    glColor3f(0.0f, 0.58f, 0.0f); // 줄기 기본 색
+    gluQuadricDrawStyle(quad, GLU_FILL);
+    /*
+    // ─ 텍스처 더 자주/덜 자주 반복시키고 싶을 때: 텍스처 행렬 스케일 ─
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    // t방향을 3배 늘려서 세로 방향으로 무늬가 더 많이 반복되게 (취향대로 수정)
+    glScalef(1.0f, 3.0f, 1.0f);
+    glMatrixMode(GL_MODELVIEW);*/
+
+    gluCylinder(quad, r, r-0.025, h, slice, 1);
+
+    // 텍스처 행렬 복구
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    // 다른 도형에 영향 안 가게 정리
+    gluQuadricTexture(quad, GL_FALSE);
+    glDisable(GL_TEXTURE_2D);
 }
 
 
-
+// 토마토 꼭대기 작은 잎(삼각형) - 텍스처 사용
 void TomatoLeaf() {
-	// 색상 진하게 조정
-	glRotatef(90, -1, 0, 0);
-	glColor3f(0.0f, 0.4f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	// 잎에 약간의 두께(깊이)를 주어 얇은 평면으로 인한 깜빡임을 방지
-	glVertex3f(0.0f, 0.0f, 0.005f);
-	glVertex3f(0.03f, 0.0f, 0.005f);
-	// 높이 조정
-	glVertex3f(0.005f, 0.05f, 0.005f);
-	glEnd();
+    glRotatef(90, -1, 0, 0);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gLeafTex);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glColor3f(0.0f, 0.32f, 0.0f);
+
+    glBegin(GL_TRIANGLES);
+    glNormal3f(0.0f, 0.0f, 1.0f);
+
+    glTexCoord2f(0.05f, 0.0f);
+    glVertex3f(0.0f, 0.0f, 0.005f);
+
+    glTexCoord2f(0.10f, 0.0f);
+    glVertex3f(0.03f, 0.0f, 0.005f);
+
+    glTexCoord2f(0.075f, 0.10f);
+    glVertex3f(0.005f, 0.05f, 0.005f);
+
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);   // ★ 여기서 꺼줘야 토마토에 안 묻음
 }
 
 void TomatoCapLeaves(float r) {
-	// 잎이 구체 위로 더 잘 보이도록 이동
-	glTranslatef(0.0f, r + 0.01, 0.0f);
-	for (int i = 0; i < 3; ++i) {
-		glPushMatrix();
-		glRotatef(i * 120.0f, 0, 1, 0);
-		TomatoLeaf();
-		glPopMatrix();
-	}
+    glTranslatef(0.0f, r + 0.01f, 0.0f);
+    for (int i = 0; i < 3; ++i) {
+        glPushMatrix();
+        glRotatef(i * 120.0f, 0, 1, 0);
+        TomatoLeaf();
+        glPopMatrix();
+    }
 }
 
+// 토마토 본체(구)
 void Tomato(float r) {
-	glPushMatrix();
-	glColor3f(1.0, 0.0, 0.0); // 빨강
-	glutSolidSphere(r, 30, 30);
-	TomatoCapLeaves(r);
-	glPopMatrix();
+    glPushMatrix();
+
+    // 토마토 구는 텍스처 없이 재질/조명으로만
+    glDisable(GL_TEXTURE_2D);
+
+    glDisable(GL_COLOR_MATERIAL);
+    GLfloat matAmbient[] = { 0.35f, 0.05f, 0.05f, 1.0f };  // 톤 유지
+    GLfloat matDiffuse[] = { 0.85f, 0.18f, 0.18f, 1.0f };  // 붉은 채도 유지
+    GLfloat matSpecular[] = { 0.4f, 0.5f, 0.5f, 1.0f };     // ★ 약한 하이라이트
+    GLfloat matShininess[] = { 35.0f };
+
+    // 살짝 스스로 빛나는 느낌
+    GLfloat matEmission[] = { 0.2f, 0.03f, 0.03f, 1.0f };
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
+    glMaterialfv(GL_FRONT, GL_EMISSION, matEmission);
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glutSolidSphere(r, 30, 30);
+
+    // emission 원상복구
+    GLfloat zeroEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    glMaterialfv(GL_FRONT, GL_EMISSION, zeroEmission);
+
+    // 꼭대기 잎은 텍스처 사용
+    glEnable(GL_TEXTURE_2D);
+    TomatoCapLeaves(r);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glPopMatrix();
 }
 
-void DrawLeaflet(float width, float length, float tipOffset) {
-	// 잎 조각 하나 (길쭉한 타원형 또는 삼각형 형태)
-	glBegin(GL_TRIANGLES);
-
-	// 색상 설정 (밝은 녹색)
-	glColor3f(0.1f, 0.6f, 0.1f);
-
-	// 꼭짓점 3개로 구성된 잎 조각
-	// 1. 줄기 쪽 넓은 부분 (왼쪽)
-	glVertex3f(-width / 2.0f, 0.0f, 0.0f);
-	// 2. 줄기 쪽 넓은 부분 (오른쪽)
-	glVertex3f(width / 2.0f, 0.0f, 0.0f);
-	// 3. 잎 끝 (tipOffset을 이용해 끝을 뾰족하게)
-	glVertex3f(tipOffset, length, 0.0f);
-
-	glEnd();
-}
-
+// 큰 잎(브랜치 잎) – 이미 잘 되어 있어서 텍스처 켰다가 끄기만 추가
 void DrawTomatoLeaf(float len, float wid) {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gLeafTex);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
-	// 잎의 색상 (밝지만 자연스러운 풀잎색: R=0.1, G=0.9, B=0.1)
-	glColor3f(0.1f, 0.9f, 0.1f);
+    float length = len;
+    float width = wid;
+    float z_bulge = 0.05;
+    glNormal3f(0.0f, 0.0f, 1.0f);
 
-	float length = len; // 잎의 길이
-	float width = wid;
-	float z_bulge = 0.02f; // 중앙이 부풀어 오른 정도
+    // 왼쪽
+    glBegin(GL_QUAD_STRIP);
+    glTexCoord2f(0.05f, 0.0f);  glVertex3f(0, 0, 0);
+    glTexCoord2f(0.025f, 0.0f);  glVertex3f(-width / 4, 0, 0);
 
-	// ----------------------------------------------------
-	// 1. 잎의 왼쪽 반쪽 (기존 코드와 동일)
-	// ----------------------------------------------------
-	glBegin(GL_QUAD_STRIP);
+    glTexCoord2f(0.05f, 0.04f); glVertex3f(0, length * 0.4f, z_bulge);
+    glTexCoord2f(0.0f, 0.04f); glVertex3f(-width / 2, length * 0.4f, 0);
 
-	// 시작점
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(-width / 4.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.05f, 0.08f); glVertex3f(0, length * 0.8f, z_bulge / 2);
+    glTexCoord2f(0.025f, 0.08f); glVertex3f(-width / 4, length * 0.8f, 0);
 
-	// 중간 (가장 넓고 부푼 곳)
-	glVertex3f(0.0f, length * 0.4f, z_bulge);
-	glVertex3f(-width / 2.0f, length * 0.4f, 0.0f);
+    glTexCoord2f(0.05f, 0.1f);  glVertex3f(0, length, 0);
+    glTexCoord2f(0.05f, 0.1f);  glVertex3f(0, length, 0);
+    glEnd();
 
-	// 끝으로 가늘어지는 부분
-	glVertex3f(0.0f, length * 0.8f, z_bulge / 2.0f);
-	glVertex3f(-width / 4.0f, length * 0.8f, 0.0f);
+    // 오른쪽
+    glBegin(GL_QUAD_STRIP);
+    glTexCoord2f(0.05f, 0.0f);  glVertex3f(0, 0, 0);
+    glTexCoord2f(0.075f, 0.0f);  glVertex3f(width / 4, 0, 0);
 
-	// 잎의 끝점 (뾰족하게 마무리)
-	glVertex3f(0.0f, length, 0.0f);
-	glVertex3f(0.0f, length, 0.0f);
+    glTexCoord2f(0.05f, 0.04f); glVertex3f(0, length * 0.4f, z_bulge);
+    glTexCoord2f(0.1f, 0.04f); glVertex3f(width / 2, length * 0.4f, 0);
 
-	glEnd();
+    glTexCoord2f(0.05f, 0.08f); glVertex3f(0, length * 0.8f, z_bulge / 2);
+    glTexCoord2f(0.075f, 0.08f); glVertex3f(width / 4, length * 0.8f, 0);
 
-	// ----------------------------------------------------
-	// 2. 잎의 오른쪽 반쪽 (대칭 구조)
-	// ----------------------------------------------------
-	glBegin(GL_QUAD_STRIP);
+    glTexCoord2f(0.05f, 0.1f);  glVertex3f(0, length, 0);
+    glTexCoord2f(0.05f, 0.1f);  glVertex3f(0, length, 0);
+    glEnd();
 
-	// 시작점 (Z값은 왼쪽과 동일하거나 0으로 유지)
-	glVertex3f(0.0f, 0.0f, 0.0f); // 중앙 
-	glVertex3f(width / 4.0f, 0.0f, 0.0f); // **오른쪽 옆**
+    // 중앙 잎맥
+    glColor3f(0.0f, 0.4f, 0.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, length, 0.0f);
+    glEnd();
 
-	// 중간 (가장 넓고 부푼 곳)
-	glVertex3f(0.0f, length * 0.4f, z_bulge); // 중앙 부풀음
-	glVertex3f(width / 2.0f, length * 0.4f, 0.0f); // **오른쪽 옆**
-
-	// 끝으로 가늘어지는 부분
-	glVertex3f(0.0f, length * 0.8f, z_bulge / 2.0f);
-	glVertex3f(width / 4.0f, length * 0.8f, 0.0f); // **오른쪽 옆**
-
-	// 잎의 끝점
-	glVertex3f(0.0f, length, 0.0f);
-	glVertex3f(0.0f, length, 0.0f);
-
-	glEnd();
-
-	// ----------------------------------------------------
-	// 3. 중앙 잎맥 (Lines)
-	// ----------------------------------------------------
-	glColor3f(0.0f, 0.4f, 0.0f); // 진한 녹색
-	glBegin(GL_LINES);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, length, 0.0f);
-	glEnd();
+    glDisable(GL_TEXTURE_2D);   // ★ 다음 물체에 텍스처 안 묻도록
 }
 
+// 토마토 + 가지 묶음
 void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
-	glPushMatrix();
-	// 1. 위치 및 나선형 회전
-	glTranslatef(0.0f, stem_h, 0.0f);
-	glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
+    glPushMatrix();
 
-	float branch_start_offset = 0.03f;
-	glTranslatef(0.0f, 0.2f, branch_start_offset);
-	glPushMatrix(); // 잎 한 쌍을 그리기 위한 전체 변환 저장
-	// 잎의 기본 방향과 위치 설정
-	glRotatef(90, 1, 0, 0);
-	glTranslatef(0.02, 0, -0.02);
+    glTranslatef(0.0f, stem_h, 0.0f);
+    glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
 
-	// 잎 1: Y축(세로축) 기준 15도 회전
-	glPushMatrix();
-	//glRotatef(60.0f, 0.0f, -1.0f, 0.0f);
-	DrawTomatoLeaf(0.13,0.1);
-	glPopMatrix();
+    float branch_start_offset = 0.01f;
+    glTranslatef(0.0f, 0.2f, branch_start_offset);
 
-	// 잎 2: Y축(세로축) 기준 -15도 회전 (반대 방향)
-	glPushMatrix();
-	glRotatef(-60.0f, 0.0f, 0.0f, 1.0f);
-	DrawTomatoLeaf(0.15,0.13);
-	glPopMatrix();
+    // 잎 묶음
+    glPushMatrix();
+    glRotatef(90, 1, 0, 0);
+    glTranslatef(0.02f, 0, -0.02f);
 
-	glPopMatrix(); // 잎 변환 스택 복원
-	glRotatef(20, 1.0f, 0.0f, 0.0f); // 가지를 아래로 살짝 기울임
+    glPushMatrix();
+    DrawTomatoLeaf(0.13f, 0.1f);
+    glPopMatrix();
 
-	// 2. 가지 줄기 (길이 연장)
-	float branch_length = 0.18f; // 가지 길이를 늘려 줄기에서 분리되게 함
-	glPushMatrix();
+    glPushMatrix();
+    glRotatef(-60.0f, 0.0f, 0.0f, 1.0f);
+    DrawTomatoLeaf(0.15f, 0.13f);
+    glPopMatrix();
 
-	glColor3f(0.0f, 0.4f, 0.0f);
-	if (!quad) quad = gluNewQuadric();
-	gluCylinder(quad, 0.012, 0.01, branch_length, 10, 1);
-	glPopMatrix();
+    glPopMatrix();
 
-	// 3. 토마토 열매 묶음
-	glPushMatrix();
+    glRotatef(20, 1.0f, 0.0f, 0.0f);
 
-	glTranslatef(0.0f, -0.1f, branch_length); // 가지 끝으로 이동
-	glRotatef(-40, 1, 0, 0);
-	glRotatef(30, 1.0f, 0.0f, 0.0f);
+    // 가지 줄기
+    float branch_length = 0.18f;
+    glPushMatrix();
+    glColor3f(0.0f, 0.28f, 0.0f);
 
-	// T1: Primary Tomato
-	glPushMatrix();
-	Tomato(0.11);
-	glPopMatrix();
+    if (!quad) quad = gluNewQuadric();
+    gluCylinder(quad, 0.012, 0.005, branch_length, 10, 1);
+    glPopMatrix();
 
-	if (count >= 2) {
-		// T2: Side Tomato
-		glPushMatrix();
-		glTranslatef(0.08, -0.05, 0.08);
-		glRotatef(15, 0, 1, 0);
-		Tomato(0.09);
-		glPopMatrix();
-	}
+    // 토마토 열매
+    glPushMatrix();
+    glTranslatef(0.0f, -0.1f, branch_length);
+    glRotatef(-40, 1, 0, 0);
+    glRotatef(30, 1.0f, 0.0f, 0.0f);
 
-	glPopMatrix();
-	glPopMatrix();
+    glPushMatrix();
+    Tomato(0.11f);
+    glPopMatrix();
+
+    if (count >= 2) {
+        glPushMatrix();
+        glTranslatef(0.08f, -0.05f, 0.08f);
+        glRotatef(15, 0, 1, 0);
+        Tomato(0.09f);
+        glPopMatrix();
+    }
+
+    glPopMatrix();
+    glPopMatrix();
 }
 
-
-
-
-
-
-
+//------------------------------
+// 디스플레이
+//------------------------------
 void MyDisplay() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
 
-	glRotatef(angleX, 1, 0, 0);
-	glRotatef(angleY, 0, 1, 0);
+    GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-	// --- 화분 및 흙 (위치 조정) ---
-	glPushMatrix();
-	glTranslatef(0, -0.2, 0); // Y축 이동 값을 음수로 변경하여 아래로 내림
-	glRotatef(90, 1, 0, 0);
-	FlowerPot(0.45);
-	glRotatef(-90, 1, 0, 0);
-	glRotatef(90, -1, 0, 0);
-	Soild();
-	glPopMatrix();
+    glRotatef(angleX, 1, 0, 0);
+    glRotatef(angleY, 0, 1, 0);
 
-	// --- 줄기 그리기 ---
-	glPushMatrix();
-	glRotatef(90, -1, 0, 0);
-	// 화분 위치를 내린 만큼 줄기 시작점도 조정
-	glTranslatef(0.0, 0, -0.5);
-	Stem(0.02, 1.5, 30);
-	glPopMatrix();
+    // 조명은 항상 켜둠
+    glEnable(GL_LIGHTING);
 
-	// --- 방울토마토 묶음 배치 (나선형, 3개 묶음으로 축소) ---
-	float initial_height = 0.1f;
-	float height_step = 0.3f;
-	float angle_step = 70.0f; // 나선형 간격 설정
-	int total_clusters = 4;
-	float angle_step2 = 80;
+    // 화분 + 흙
+    glPushMatrix();
+    glTranslatef(0, -0.2f, 0);
+    glRotatef(90, 1, 0, 0);
+    FlowerPot(0.45f);
+    glRotatef(-90, 1, 0, 0);
+    glRotatef(90, -1, 0, 0);
+    Soild();
+    glPopMatrix();
 
-	glPushMatrix();
-	glRotatef(angle_step2, 0, 1, 0);
-	glRotatef(90, 1, 0, 0);
-	DrawTomatoLeaf(0.08, 0.04);
-	glPopMatrix();
-	for (int i = 0; i < total_clusters; i++) {
-		float current_height = initial_height + (i * height_step);
-		float current_angle = i * angle_step;
-		int count = 0;
-		if (i < 2) {
-			count = 2;
-		}
-		else {
-			count = 1;
-		}
-		if (i == 3) {
-			count = 2;
-			current_height = initial_height + (height_step);
-		}
+    // 줄기
+    glPushMatrix();
+    glRotatef(90, -1, 0, 0);
+    glTranslatef(0.0f, 0, -0.5f);
+    Stem(0.03f, 1.5f, 30);
+    glPopMatrix();
 
-		TomatoDisplay(current_height, current_angle, count);
-	}
+    // 맨 아래 큰 잎 한 장
+    float initial_height = 0.1f;
+    float height_step = 0.3f;
+    float angle_step = 70.0f;
+    int   total_clusters = 4;
+    float angle_step2 = 80.0f;
 
+    glPushMatrix();
+    glRotatef(angle_step2, 0, 1, 0);
+    glRotatef(90, 1, 0, 0);
+    DrawTomatoLeaf(0.08f, 0.04f);
+    glPopMatrix();
 
-	glutSwapBuffers();
+    // 토마토 묶음들
+    for (int i = 0; i < total_clusters; i++) {
+        float current_height = initial_height + (i * height_step);
+        float current_angle = i * angle_step;
+        int count = (i < 2) ? 2 : 1;
+        if (i == 3) {
+            count = 2;
+            current_height = initial_height + height_step;
+        }
+        TomatoDisplay(current_height, current_angle, count);
+    }
+
+    glutSwapBuffers();
 }
 
+//------------------------------
+// 기타 콜백
+//------------------------------
 void MyReshape(int w, int h) {
-	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45, (GLfloat)w / (GLfloat)h, 0.1, 100);
+    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, (GLfloat)w / (GLfloat)h, 0.1, 100);
 }
 
 void Mouse(int button, int state, int x, int y) {
-	if (button == GLUT_LEFT_BUTTON) {
-		if (state == GLUT_DOWN) {
-			isDragging = true;
-			prevX = x;
-			prevY = y;
-		}
-		else {
-			isDragging = false;
-		}
-	}
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            isDragging = true;
+            prevX = x;
+            prevY = y;
+        }
+        else {
+            isDragging = false;
+        }
+    }
 }
 
 void Motion(int x, int y) {
-	if (isDragging) {
-		int dx = x - prevX;
-		int dy = y - prevY;
+    if (isDragging) {
+        int dx = x - prevX;
+        int dy = y - prevY;
 
-		angleY += dx * 0.5f;
-		angleX += dy * 0.5f;
+        angleY += dx * 0.5f;
+        angleX += dy * 0.5f;
 
-		prevX = x;
-		prevY = y;
+        prevX = x;
+        prevY = y;
 
-		glutPostRedisplay();
-	}
+        glutPostRedisplay();
+    }
 }
 
+//------------------------------
+// main
+//------------------------------
 int main(int argc, char** argv)
 {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize(500, 500);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("Cherry Tomato Plant (Spiral)");
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(0, 0);
+    glutCreateWindow("Cherry Tomato Plant (Spiral)");
 
-	// 깊이 테스트만 활성화 (조명 없음)
-	glEnable(GL_DEPTH_TEST);
-	glClearColor(0, 0, 0, 0);
+    glShadeModel(GL_SMOOTH);
+    SetupLighting();
 
-	if (!quad) quad = gluNewQuadric();
+    glEnable(GL_DEPTH_TEST);
 
-	glutDisplayFunc(MyDisplay);
-	glutReshapeFunc(MyReshape);
-	glutMouseFunc(Mouse);
-	glutMotionFunc(Motion);
+    LoadLeafTexture("C:/Users/eunse/source/repos/ComputerGraphic/24leaf_texture.bmp");
+    LoadSoilTexture("C:/Users/eunse/source/repos/ComputerGraphic/soild_texture.bmp");
+    LoadStemTexture("C:/Users/eunse/source/repos/ComputerGraphic/stem_texture.bmp");
+    //LoadTomatoTexture("C:/Users/eunse/source/repos/ComputerGraphic/tomato_texture.bmp");
+   
 
-	glutMainLoop();
-	return 0;
-} 
+    glClearColor(1, 1, 1, 1);
 
-*/
+    if (!quad) quad = gluNewQuadric();
+
+    glutDisplayFunc(MyDisplay);
+    glutReshapeFunc(MyReshape);
+    glutMouseFunc(Mouse);
+    glutMotionFunc(Motion);
+
+    glutMainLoop();
+    return 0;
+}

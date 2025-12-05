@@ -8,6 +8,8 @@
 #include <string.h>
 #include <glm/glm.hpp>
 
+
+/*
 using namespace glm;
 using namespace std;
 
@@ -191,4 +193,4 @@ int main(int argc, char** argv) {
 
     glutMainLoop();
     return 0;
-}
+}*/

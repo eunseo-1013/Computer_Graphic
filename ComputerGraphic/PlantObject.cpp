@@ -8,8 +8,8 @@
 #include <GL/glut.h>
 
 
-
 /*
+
 
 float angleX = 0.0f;  // X축 회전 각도
 float angleY = 0.0f;  // Y축 회전 각도
@@ -77,6 +77,9 @@ void TomatoLeaves() { // 잎 3개
     
 
 }
+
+
+/*
 void Tomato(float r, float slice_h=30, float slice_w=30) { // 토마토 객체
     glColor3f(1.0, 0.0, 0.0); // 빨강
     //glutWireSphere(r, slice_h, slice_w);   // Wireframe ( 임시 토마토 !)
@@ -85,9 +88,9 @@ void Tomato(float r, float slice_h=30, float slice_w=30) { // 토마토 객체
    
     TomatoLeaves();
 
-}
+}*/
 
-
+/*
 
 void TomatoDisplay( float movx, float movy, int cnt = 1) { //토마토 3개 묶음
 
@@ -108,6 +111,7 @@ void TomatoDisplay( float movx, float movy, int cnt = 1) { //토마토 3개 묶음
     }
     glPopMatrix();
 }
+
 
 
 // 3. Small Leaf (토마토 꼭지 또는 가지 연결부 가리기용 잎)
@@ -139,6 +143,8 @@ void TomatoCapLeaves() { // 함수명 변경: 토마토에 붙는 잎임을 명확히 함
     glPopMatrix();
 }
 
+
+
 // 5. Tomato object (토마토 열매 + 꼭지)
 void Tomato(float r) {
     // Tomato (Solid Sphere)
@@ -156,6 +162,7 @@ void Tomato(float r) {
 // 7. Tomato Cluster Display (토마토 묶음 배치 - 가지 및 접합부 잎 포함)
 // stem_h: Y축 줄기 높이, angle_y: Y축 회전 각도, count: 토마토 개수
 void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
+    GLUquadric* quad = gluNewQuadric();
     glPushMatrix();
 
     // 1. Global positioning (주 줄기에 위치)
@@ -339,6 +346,8 @@ void DrawSimpleLeaf(float length = 0.2f, float max_width = 0.1f, float z = 0.0f)
     glEnd();
 }
 
+
+
 void Leave(float size, float a, float b, float c) {
     glPushMatrix();
     glScalef(a, b, c);
@@ -480,6 +489,5 @@ int main(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
-
 
 */
