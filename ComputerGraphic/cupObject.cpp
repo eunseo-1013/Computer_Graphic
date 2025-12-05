@@ -2,46 +2,31 @@
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-//#include "Camera.h"
 #include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/glm.hpp>
-/*
-camera cam;
-using namespace glm;
+
 using namespace std;
 
 int windowWidth = 1280;
 int windowHeight = 720;
-bool keys[256];
-
-bool firstMouse = true;
-float lastX = windowWidth / 2.0;
-float lastY = windowHeight / 2.0;
-float camYaw = -90.0f;
-float camPitch = 0.0f;
-float cameraSpeed = 0.05f;
-
 
 // 마우스 회전 관련 전역 변수
 float angleX = 0.0f;
 float angleY = 0.0f;
-int prevX, prevY;
-bool isDragging = false;
+int   prevX, prevY;
+bool  isDragging = false;
 
-// GLU Quadric 객체 선언
+// GLU Quadric (필요시 전역 사용 가능)
 GLUquadric* quad = NULL;
 
+// --------------------------
 // 조명 및 유리 재질 초기화
+// --------------------------
 void initLighting() {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
-    // --------------------------
     // 조명 설정
-    // --------------------------
     GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     GLfloat lightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -52,32 +37,38 @@ void initLighting() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-    // --------------------------
-    // 유리 재질 설정
-    // --------------------------
-    GLfloat matAmbient[] = { 0.1f, 0.1f, 0.1f, 0.3f };
-    GLfloat matDiffuse[] = { 0.6f, 0.8f, 0.9f, 0.3f }; // 살짝 푸른빛
-    GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 0.3f };
-    GLfloat matShininess[] = { 100.0f }; // 반짝임 강함
+
+   // 유리 재질 설정
+    GLfloat matAmbient[] = { 0.02f, 0.2f, 0.2f, 0.1f };  // 거의 없음
+    GLfloat matDiffuse[] = { 0.6f, 0.8f, 0.9f, 0.3f };    // 색은 약간만, 알파 아주 낮게
+    GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 0.2f };     // 반사광은 유지
+    GLfloat matShininess[] = { 120.0f };               // 반짝임 강함
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
     glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
-
-    // 법선 자동 계산
-    if (quad) gluQuadricNormals(quad, GLU_SMOOTH);
 }
 
-// --------------------------
-// 컵 그리기
-// --------------------------
 void cup_object() {
     GLUquadric* quad = gluNewQuadric();
     gluQuadricNormals(quad, GLU_SMOOTH);
 
     glPushMatrix();
-    glRotatef(-90, 1, 0, 0);
+    glRotatef(-90, 1, 0, 0); // 컵을 위로 세우기
+
+    // --------------------------
+    // 파라미터들
+    // --------------------------
+    float outerBottom = 0.5f;
+    float outerTop = 0.8f;
+    float height = 2.0f;
+
+    float thickness = 0.05f;          // 유리 두께
+    float innerBottom = outerBottom - thickness;
+    float innerTop = outerTop - thickness;
+
+    int slices = 40;
 
     // --------------------------
     // 투명 유리 효과
@@ -86,12 +77,49 @@ void cup_object() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
 
-    // 컵 외벽 (잘린 원뿔)
-    gluCylinder(quad, 0.5, 0.8, 2.0, 30, 30);
+    // --------------------------
+    // 1) 컵 외벽
+    // --------------------------
+    gluCylinder(quad, outerBottom, outerTop, height, slices, slices);
 
-    // 컵 바닥
-    gluDisk(quad, 0.0, 0.5, 30, 1);
+    // 1-1) 컵 외부 바닥 (바깥쪽 면)
+    gluDisk(quad, 0.0f, outerBottom, slices, 1);
 
+    // --------------------------
+    // 2) 컵 내부 벽 (두께 표현)
+    //    안쪽을 향하도록 뒤집어서 그림
+    // --------------------------
+    glPushMatrix();
+    glTranslatef(0, 0, height);
+    glRotatef(180, 1, 0, 0); // 위에서 아래로 뒤집기
+    gluCylinder(quad, innerTop, innerBottom, height-0.2, slices, slices);
+    glPopMatrix();
+
+    // --------------------------
+    // 3) 윗 테두리(컵 입구) 링
+    //    innerTop ~ outerTop 사이를 막아줌
+    // --------------------------
+    glPushMatrix();
+    glTranslatef(0, 0, height); // 컵 윗부분 z = height 위치
+    gluDisk(quad, innerTop, outerTop, slices, 1);
+    glPopMatrix();
+
+    // --------------------------
+    // 4) 바닥 두께 링 (outerBottom ~ innerBottom)
+    // --------------------------
+    gluDisk(quad, innerBottom, outerBottom, slices, 1);
+
+    // --------------------------
+    // 5) 컵 안쪽 바닥 (사용자가 보는 내부 바닥)
+    // --------------------------
+    glPushMatrix();
+    glTranslatef(0, 0, 0.01f); // Z-fighting 방지용 약간 올림
+    gluDisk(quad, 0.0f, innerBottom, slices, 1);
+    glPopMatrix();
+
+    // --------------------------
+    // 마무리
+    // --------------------------
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
 
@@ -99,16 +127,19 @@ void cup_object() {
     gluDeleteQuadric(quad);
 }
 
+
+
 // --------------------------
-// 디스플레이 콜백
+// 디스플레이 콜백 (실제 사용)
 // --------------------------
-/*
 void MyDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 5,   // eye
+        0, 0, 0,   // center
+        0, 1, 0);  // up
 
     // 마우스 회전 적용
     glRotatef(angleX, 1, 0, 0);
@@ -122,44 +153,51 @@ void MyDisplay() {
     glutSwapBuffers();
 }
 
-void MyDisplay(){
+/*  필요하면 예전 버전 디스플레이를 참고용으로 이렇게 보관해도 됨
+
+void MyDisplay_Old(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    gluPerspective(45.0f,
+                   (float)windowWidth / (float)windowHeight,
+                   0.1f, 100.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    /*
-    gluLookAt(cam.eye.x, cam.eye.y, cam.eye.z,
-        cam.at.x, cam.at.y, cam.at.z,
-        cam.up.x, cam.up.y, cam.up.z);
-        
-    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 5,
+              0, 0, 0,
+              0, 1, 0);
 
     glPushMatrix();
-    glTranslatef(0, -1.0, 0); // 컵 위치 조정
+    glTranslatef(0, -1.0, 0);
     cup_object();
     glPopMatrix();
 
     glutSwapBuffers();
 }
-
+*/
 
 // --------------------------
 // 리쉐이프 콜백
 // --------------------------
 void MyReshape(int w, int h) {
+    windowWidth = w;
+    windowHeight = h;
+
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat)w / (GLfloat)h, 0.1, 100);
+    gluPerspective(60.0,
+        (GLfloat)w / (GLfloat)h,
+        0.1, 100.0);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
 // --------------------------
-// 마우스
+// 마우스 콜백 (드래그로 회전)
 // --------------------------
-/*
 void Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
@@ -167,88 +205,40 @@ void Mouse(int button, int state, int x, int y) {
             prevX = x;
             prevY = y;
         }
-        else {
+        else if (state == GLUT_UP) {
             isDragging = false;
-           
         }
     }
-
- 
 }
 
 void Motion(int x, int y) {
-    if (!isDragging) {
+    if (isDragging) {
         int dx = x - prevX;
         int dy = y - prevY;
 
-        angleY += dx * 0.2f;
-        angleX += dy * 0.2f;
+        angleY += dx * 0.3f;
+        angleX += dy * 0.3f;
 
-        if (angleX > 360.0f) angleX -= 360.0f;
+        // 각도 값 너무 커지지 않게 간단히 제한
+        if (angleX > 360.0f)  angleX -= 360.0f;
         if (angleX < -360.0f) angleX += 360.0f;
-        if (angleY > 360.0f) angleY -= 360.0f;
+        if (angleY > 360.0f)  angleY -= 360.0f;
         if (angleY < -360.0f) angleY += 360.0f;
 
         prevX = x;
         prevY = y;
+
         glutPostRedisplay();
     }
 }
-*/
-/*
 
-void mouseMove(int x, int y) {
-    if (firstMouse) {
-        lastX = x;
-        lastY = y;
-        firstMouse = false;
-    }
-
-    float xoffset = x - lastX;
-    float yoffset = lastY - y;
-    lastX = x;
-    lastY = y;
-
-    float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    camYaw += xoffset;
-    camPitch += yoffset;
-    if (camPitch > 89.0f) camPitch = 89.0f;
-    if (camPitch < -89.0f) camPitch = -89.0f;
-
-    vec3 dir;
-    dir.x = cos(radians(camYaw)) * cos(radians(camPitch));
-    dir.y = sin(radians(camPitch));
-    dir.z = sin(radians(camYaw)) * cos(radians(camPitch));
-
-    cam.at = cam.eye + normalize(dir);
-    cam.UpdateCamera();
-}
-
-void moveCamera(int value) {
-    vec3 forward = normalize(cam.at - cam.eye);
-    vec3 right = normalize(cross(forward, cam.up));
-
-    if (keys['w']) cam.MoveCamera(forward * cameraSpeed);
-    if (keys['s']) cam.MoveCamera(-forward * cameraSpeed);
-    if (keys['a']) cam.MoveCamera(-right * cameraSpeed);
-    if (keys['d']) cam.MoveCamera(right * cameraSpeed);
-    if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
-    if (keys['c']) cam.MoveCamera(-cam.up * cameraSpeed);
-
-    glutPostRedisplay();
-    glutTimerFunc(16, moveCamera, 0);
-}
-
+// --------------------------
+// 키보드 콜백
+// --------------------------
 void keyboard(unsigned char key, int x, int y) {
-    if (key == 27) glutLeaveMainLoop();
-    keys[key] = true;
-}
-
-void keyboardUp(unsigned char key, int x, int y) {
-    keys[key] = false;
+    if (key == 27) { // ESC
+        glutLeaveMainLoop();
+    }
 }
 
 // --------------------------
@@ -260,27 +250,26 @@ int main(int argc, char** argv) {
     glutInitWindowSize(500, 500);
     glutCreateWindow("Transparent Glass Cup with Rotation");
 
-    quad = gluNewQuadric();
+    // GLEW 초기화 (필수 환경이면)
+    GLenum err = glewInit();
+    if (GLEW_OK != err) {
+        cerr << "Error: " << glewGetErrorString(err) << endl;
+        return -1;
+    }
 
-    // 배경 어둡게
-    glClearColor(1,1 , 1, 1);
+    // 배경 흰색
+    glClearColor(1.0, 1.0, 1.0, 1.0);
 
     initLighting();
 
     glutDisplayFunc(MyDisplay);
     glutReshapeFunc(MyReshape);
-    //glutMouseFunc(Mouse);
-    //glutMotionFunc(Motion);
+    glutMouseFunc(Mouse);
+    glutMotionFunc(Motion);
     glutKeyboardFunc(keyboard);
-    glutKeyboardUpFunc(keyboardUp);
-    glutPassiveMotionFunc(mouseMove);
-    glutTimerFunc(16, moveCamera, 0);
 
     glutMainLoop();
 
     if (quad) gluDeleteQuadric(quad);
     return 0;
 }
-
-
-*/

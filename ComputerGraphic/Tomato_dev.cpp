@@ -7,6 +7,9 @@
 #include <math.h>
 #include "glaux.h"
 
+
+/*
+
 //------------------------------
 // 조명 설정
 //------------------------------
@@ -213,7 +216,7 @@ void FlowerPot(float size) {
 
 
 
-    /**** 조명 *****/
+
     // ----- 0. 조명 상태 백업 -----
     GLfloat oldAmb[4], oldDiff[4], oldSpec[4];
     glGetLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
@@ -367,7 +370,7 @@ void Stem(float r, float h, float slice = 30) {
     glPushMatrix();
     // t방향을 3배 늘려서 세로 방향으로 무늬가 더 많이 반복되게 (취향대로 수정)
     glScalef(1.0f, 3.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);*/
+    glMatrixMode(GL_MODELVIEW);*/ /*
 
     gluCylinder(quad, r, r-0.025, h, slice, 1);
 
@@ -428,7 +431,7 @@ void Tomato(float r) {
     glDisable(GL_COLOR_MATERIAL);
     GLfloat matAmbient[] = { 0.35f, 0.05f, 0.05f, 1.0f };  // 톤 유지
     GLfloat matDiffuse[] = { 0.85f, 0.18f, 0.18f, 1.0f };  // 붉은 채도 유지
-    GLfloat matSpecular[] = { 0.4f, 0.5f, 0.5f, 1.0f };     // ★ 약한 하이라이트
+    GLfloat matSpecular[] = { 0.5f, 0.6f, 0.5f, 1.0f };     // ★ 약한 하이라이트
     GLfloat matShininess[] = { 35.0f };
 
     // 살짝 스스로 빛나는 느낌
@@ -704,3 +707,6 @@ int main(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
+
+
+*/
