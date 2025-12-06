@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add_light_tomato_gpt.cpp" />
+    <ClCompile Include="control.cpp" />
     <ClCompile Include="cupObject.cpp" />
     <ClCompile Include="gauge_circle.cpp" />
     <ClCompile Include="hand.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="control.h" />
     <ClInclude Include="cup_noodle.h" />
     <ClInclude Include="gauge_circle.h" />
     <ClInclude Include="loadTexture.h" />

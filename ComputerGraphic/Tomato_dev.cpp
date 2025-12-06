@@ -8,15 +8,16 @@
 #include "glaux.h"
 #include "loadTexture.h"
 #include "gauge_circle.h"
+#include "skybox.h"
+#include "control.h"
 
-
-/// 1 . loadtexture 합치기 
-/// 2. main 에 페이지 번호 추가하기
-/// 3. 화면 마다 게이지  바 추가하기
+/// 1 loadtexture 합치기  o
+/// 2. main 에 페이지 번호 추가하기 
+/// 3. 게이지  바 추가하기 o
 /// 4. skybox 이용해서 모든 화면에 배경 추가 하기 
-/// 5. 클릭하면 게이지 바 올라가기
+/// 5. 클릭하면 게이지 바 올라가기 
 /// 6. 조작 통일하기
-/// 3,4  ->  5,2
+///6 -> 4  ->  5,2
 
 
 
@@ -264,7 +265,7 @@ void TomatoLeaf() {
 
     glEnd();
 
-    glDisable(GL_TEXTURE_2D);   // ★ 여기서 꺼줘야 토마토에 안 묻음
+    glDisable(GL_TEXTURE_2D);  
 }
 
 void TomatoCapLeaves(float r) {
@@ -431,6 +432,7 @@ void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
 // 디스플레이
 //------------------------------
 void MyDisplay() {
+    //InitSkybox();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
@@ -438,7 +440,8 @@ void MyDisplay() {
     
     gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
  
- 
+    // 배경
+    DrawSkybox();
 
     // 중심 (400, 300), 반지름 150, 두께 30
    
@@ -531,6 +534,9 @@ void MyDisplay() {
     glutSwapBuffers();
 }
 
+
+
+
 //------------------------------
 // 기타 콜백
 //------------------------------
@@ -579,7 +585,7 @@ void Motion(int x, int y) {
 //------------------------------
 // main
 //------------------------------
-int main(int argc, char** argv)
+int main22(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -603,7 +609,9 @@ int main(int argc, char** argv)
     if (!quad) quad = gluNewQuadric();
 
     glutDisplayFunc(MyDisplay);
+
     glutReshapeFunc(MyReshape);
+
     glutMouseFunc(Mouse);
     glutMotionFunc(Motion);
 

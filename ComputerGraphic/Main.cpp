@@ -8,11 +8,12 @@
 #include "cup_noodle.h" 
 #include "water_kettle.h"
 #include "skybox.h"
+#include "control.h"
 
 
 
 
-
+/*
 camera cam;
 using namespace glm;
 using namespace std;
@@ -31,6 +32,8 @@ float kettleAngle = 0.0f;
 float waterTime = 0.0f;
 float kettleLift = 0.0f;
 bool kettleSelected = false;
+
+*/
 
 void cup_object() {
     GLUquadric* quad = gluNewQuadric();
@@ -176,7 +179,7 @@ void reshape(int w, int h) {
     windowHeight = h;
     glViewport(0, 0, w, h);
 }
-
+/*
 void keyboard(unsigned char key, int x, int y) {
     if (key == 27) glutLeaveMainLoop();
     keys[key] = true;
@@ -188,7 +191,7 @@ void specialKeys(int key, int x, int y) {
         if (kettleAngle > 50.0f) kettleAngle = 50.0f;
     }
 
-    if (key == GLUT_KEY_RIGHT) {
+    if (key == GLUT_KEY_RIGHT && kettleSelected) {
         kettleAngle -= 1.5f;
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
     }
@@ -260,11 +263,14 @@ void mouseMove(int x, int y) {
 }
 
 void moveCamera(int value) {
-    vec3 forward = vec3(0.0f, 0.0f, -1.0f);
-    vec3 right = vec3(1.0f, 0.0f, 0.0f);
+    // 1) 현재 카메라의 바라보는 방향(front)을 계산
+    vec3 front = normalize(cam.at - cam.eye);
 
-    if (keys['w']) cam.MoveCamera(forward * cameraSpeed);
-    if (keys['s']) cam.MoveCamera(-forward * cameraSpeed);
+    // 2) 오른쪽 방향
+    vec3 right = normalize(cross(front, cam.up));
+
+    if (keys['w']) cam.MoveCamera(front * cameraSpeed);
+    if (keys['s']) cam.MoveCamera(-front * cameraSpeed);
     if (keys['a']) cam.MoveCamera(-right * cameraSpeed);
     if (keys['d']) cam.MoveCamera(right * cameraSpeed);
     if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
@@ -275,9 +281,10 @@ void moveCamera(int value) {
 }
 
 
+*/
 
 
-int main2(int argc, char** argv) {
+int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(windowWidth, windowHeight);
@@ -301,5 +308,6 @@ int main2(int argc, char** argv) {
     glutMainLoop();
     return 0;
 }
+
 
 
