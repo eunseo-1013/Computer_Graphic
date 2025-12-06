@@ -51,6 +51,9 @@
     <ClCompile Include="hand.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="gauge_circle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

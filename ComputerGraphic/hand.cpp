@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 #include <cmath>
 
+/*
 using namespace std;
 
 int windowWidth = 1280;
@@ -336,6 +337,7 @@ int main(int argc, char** argv) {
         return -1;
     }
     */
+/*
 
     // ¹è°æ Èò»ö
     glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -353,3 +355,4 @@ int main(int argc, char** argv) {
     if (quad) gluDeleteQuadric(quad);
     return 0;
 }
+*/

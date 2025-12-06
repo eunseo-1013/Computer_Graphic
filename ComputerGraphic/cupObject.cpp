@@ -4,10 +4,12 @@
 #include <GL/glu.h>
 #include <iostream>
 
+
+/*
 using namespace std;
 
 
-/*
+
 int windowWidth = 1280;
 int windowHeight = 720;
 
@@ -179,6 +181,9 @@ void MyDisplay_Old(){
     glutSwapBuffers();
 }
 */
+
+
+
 /*
 // --------------------------
 // 리쉐이프 콜백
