@@ -3,7 +3,6 @@
 #include <math.h>
 
 
-
 /*
 
 float g_value = 0.0f;   // 0.0 ~ 1.0 사이 게이지 값

@@ -147,27 +147,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Project43\Project43\hw4.cpp" />
     <ClCompile Include="add_light_tomato_gpt.cpp" />
     <ClCompile Include="cupObject.cpp" />
     <ClCompile Include="gauge_circle.cpp" />
     <ClCompile Include="hand.cpp" />
-    <ClCompile Include="hw6.cpp" />
-    <ClCompile Include="hw7.cpp" />
-    <ClCompile Include="hw8.cpp" />
     <ClCompile Include="cup_noodle.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PlantObject.cpp" />
     <ClCompile Include="plant_background.cpp" />
-    <ClCompile Include="Tomato_dev.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h" />
-    <ClInclude Include="Camera.h" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="Tomato_dev.cpp" />
     <ClCompile Include="water_kettle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cup_noodle.h" />
     <ClInclude Include="skybox.h" />

@@ -5,6 +5,11 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ComputerGraphic", "ComputerGraphic\ComputerGraphic.vcxproj", "{86F614E3-7778-4227-B479-514FB0324AA8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{2AEF5C1D-2F33-4CB4-853B-7C2AD6AB50A2}"
+	ProjectSection(SolutionItems) = preProject
+		ComputerGraphic\skybox.cpp = ComputerGraphic\skybox.cpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
