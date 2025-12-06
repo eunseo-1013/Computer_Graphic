@@ -18,10 +18,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PlantObject.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="cup_noodle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Tomato_dev.cpp">
@@ -60,6 +60,29 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClCompile Include="water_kettle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="cup_noodle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="water_kettle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
