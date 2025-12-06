@@ -6,9 +6,26 @@
 #include <stdio.h>
 #include <math.h>
 #include "glaux.h"
+#include "loadTexture.h"
 
 
-/*
+/// 1 . loadtexture 합치기 
+/// 2. main 에 페이지 번호 추가하기
+/// 3. 화면 마다 게이지  바 추가하기
+/// 4. skybox 이용해서 모든 화면에 배경 추가 하기 
+/// 5. 클릭하면 게이지 바 올라가기
+/// 6. 조작 통일하기
+/// 1,6 -> 3,4 
+
+
+
+//------------------------------
+// 텍스처 전역 변수
+//------------------------------
+GLuint gLeafTex = 0; // 잎 텍스처 번호
+GLuint gSoilTex = 0; // 흙 텍스처 번호
+GLuint gStemTex = 0;
+
 
 //------------------------------
 // 조명 설정
@@ -35,166 +52,7 @@ void SetupLighting()
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 }
 
-//------------------------------
-// 텍스처 전역 변수
-//------------------------------
-GLuint gLeafTex = 0; // 잎 텍스처 번호
-GLuint gSoilTex = 0; // 흙 텍스처 번호
-GLuint gStemTex = 0;
-GLuint gTomatoTex = 0;
 
-
-AUX_RGBImageRec* LoadBMP(const char* filename)
-{
-    FILE* file = NULL;
-    if (!filename) return NULL;
-
-    printf("LoadBMP 시도 중: [%s]\n", filename);
-
-    file = fopen(filename, "rb");
-    if (!file) {
-        printf("fopen 실패! 파일 없음: %s\n", filename);
-        return NULL;
-    }
-    fclose(file);
-
-    printf("auxDIBImageLoad 호출!\n");
-    return auxDIBImageLoad(filename);
-}
-
-bool LoadLeafTexture(const char* filename)
-{
-    AUX_RGBImageRec* img = LoadBMP(filename);
-    if (!img) {
-        printf("텍스처 파일을 읽을 수 없음: %s\n", filename);
-        return false;
-    }
-
-    printf("텍스처 로드 성공: %s (%d x %d)\n",
-        filename, (int)img->sizeX, (int)img->sizeY);
-
-    glGenTextures(1, &gLeafTex);
-    glBindTexture(GL_TEXTURE_2D, gLeafTex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGB,
-        img->sizeX,
-        img->sizeY,
-        0,
-        GL_RGB,
-        GL_UNSIGNED_BYTE,
-        img->data
-    );
-
-    printf("loadleaf 함수 성공적 종료\n");
-    return true;
-}
-
-
-bool LoadStemTexture(const char* filename)
-{
-    AUX_RGBImageRec* img = LoadBMP(filename);
-    if (!img) {
-        printf("텍스처 파일을 읽을 수 없음: %s\n", filename);
-        return false;
-    }
-
-    printf("텍스처 로드 성공: %s (%d x %d)\n",
-        filename, (int)img->sizeX, (int)img->sizeY);
-
-    glGenTextures(1, &gStemTex);
-    glBindTexture(GL_TEXTURE_2D, gStemTex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGB,
-        img->sizeX,
-        img->sizeY,
-        0,
-        GL_RGB,
-        GL_UNSIGNED_BYTE,
-        img->data
-    );
-
-    printf("loadleaf 함수 성공적 종료\n");
-    return true;
-}
-
-bool LoadSoilTexture(const char* filename)
-{
-    AUX_RGBImageRec* img = LoadBMP(filename);
-    if (!img) {
-        printf("흙 텍스처 파일을 읽을 수 없음: %s\n", filename);
-        return false;
-    }
-
-    printf("흙 텍스처 로드 성공: %s (%d x %d)\n",
-        filename, (int)img->sizeX, (int)img->sizeY);
-
-    glGenTextures(1, &gSoilTex);
-    glBindTexture(GL_TEXTURE_2D, gSoilTex);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGB,
-        img->sizeX,
-        img->sizeY,
-        0,
-        GL_RGB,
-        GL_UNSIGNED_BYTE,
-        img->data
-    );
-
-    printf("흙 텍스처 OpenGL 업로드까지 정상 완료\n");
-    return true;
-}
-
-
-bool LoadTomatoTexture(const char* filename)
-{
-    AUX_RGBImageRec* img = LoadBMP(filename);
-    if (!img) {
-        printf("흙 텍스처 파일을 읽을 수 없음: %s\n", filename);
-        return false;
-    }
-
-    printf("토마토 텍스처 로드 성공 : % s(% d x % d)\n",
-        filename, (int)img->sizeX, (int)img->sizeY);
-
-    glGenTextures(1, &gTomatoTex);
-    glBindTexture(GL_TEXTURE_2D, gTomatoTex);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGB,
-        img->sizeX,
-        img->sizeY,
-        0,
-        GL_RGB,
-        GL_UNSIGNED_BYTE,
-        img->data
-    );
-
-    printf("토마토 택스쳐 OpenGL 업로드까지 정상 완료\n");
-    return true;
-}
 
 //------------------------------
 // 마우스 회전 관련
@@ -213,9 +71,6 @@ GLUquadric* quad = NULL;
 
 void FlowerPot(float size) {
     
-
-
-
 
     // ----- 0. 조명 상태 백업 -----
     GLfloat oldAmb[4], oldDiff[4], oldSpec[4];
@@ -370,7 +225,7 @@ void Stem(float r, float h, float slice = 30) {
     glPushMatrix();
     // t방향을 3배 늘려서 세로 방향으로 무늬가 더 많이 반복되게 (취향대로 수정)
     glScalef(1.0f, 3.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);*/ /*
+    glMatrixMode(GL_MODELVIEW);*/ 
 
     gluCylinder(quad, r, r-0.025, h, slice, 1);
 
@@ -673,6 +528,9 @@ void Motion(int x, int y) {
     }
 }
 
+
+
+
 //------------------------------
 // main
 //------------------------------
@@ -689,9 +547,9 @@ int main(int argc, char** argv)
 
     glEnable(GL_DEPTH_TEST);
 
-    LoadLeafTexture("C:/Users/eunse/source/repos/ComputerGraphic/24leaf_texture.bmp");
-    LoadSoilTexture("C:/Users/eunse/source/repos/ComputerGraphic/soild_texture.bmp");
-    LoadStemTexture("C:/Users/eunse/source/repos/ComputerGraphic/stem_texture.bmp");
+     gLeafTex= gLoadTexture("texture/24leaf_texture.bmp");
+     gSoilTex=  gLoadTexture("texture/soild_texture.bmp");
+     gStemTex= gLoadTexture("texture/stem_texture.bmp");
     //LoadTomatoTexture("C:/Users/eunse/source/repos/ComputerGraphic/tomato_texture.bmp");
    
 
@@ -709,4 +567,3 @@ int main(int argc, char** argv)
 }
 
 
-*/

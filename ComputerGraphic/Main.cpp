@@ -9,6 +9,10 @@
 #include "water_kettle.h"
 #include "skybox.h"
 
+
+
+
+
 camera cam;
 using namespace glm;
 using namespace std;
@@ -270,7 +274,10 @@ void moveCamera(int value) {
     glutTimerFunc(16, moveCamera, 0);
 }
 
-int main(int argc, char** argv) {
+
+
+
+int main2(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(windowWidth, windowHeight);
@@ -294,3 +301,5 @@ int main(int argc, char** argv) {
     glutMainLoop();
     return 0;
 }
+
+

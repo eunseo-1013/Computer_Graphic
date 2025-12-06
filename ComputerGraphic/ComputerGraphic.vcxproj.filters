@@ -33,18 +33,6 @@
     <ClCompile Include="cupObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Project43\Project43\hw4.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="hw6.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="hw7.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="hw8.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="plant_background.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -52,6 +40,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="gauge_circle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlantObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainTomato.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,17 +62,17 @@
     <ClCompile Include="skybox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-	  <ClInclude Include="stb_image.h">
-		  <Filter>헤더 파일</Filter>
-	  </ClInclude>
-	  <ClInclude Include="cup_noodle.h">
-		  <Filter>헤더 파일</Filter>
-	  </ClInclude>
-	  <ClInclude Include="water_kettle.h">
-		  <Filter>헤더 파일</Filter>
-	  </ClInclude>
-	  <ClInclude Include="skybox.h">
-		  <Filter>헤더 파일</Filter>
-	  </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="cup_noodle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="water_kettle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
