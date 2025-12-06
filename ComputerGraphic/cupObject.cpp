@@ -6,6 +6,8 @@
 
 using namespace std;
 
+
+/*
 int windowWidth = 1280;
 int windowHeight = 720;
 
@@ -39,10 +41,10 @@ void initLighting() {
 
 
    // 유리 재질 설정
-    GLfloat matAmbient[] = { 0.02f, 0.2f, 0.2f, 0.1f };  // 거의 없음
-    GLfloat matDiffuse[] = { 0.6f, 0.8f, 0.9f, 0.3f };    // 색은 약간만, 알파 아주 낮게
-    GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 0.2f };     // 반사광은 유지
-    GLfloat matShininess[] = { 120.0f };               // 반짝임 강함
+    GLfloat matAmbient[] = { 0.1f, 0.1f, 0.1f, 0.3f };
+    GLfloat matDiffuse[] = { 0.7f, 0.9f, 1.0f, 0.6f }; // 살짝 푸른빛
+    GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 0.3f };
+    GLfloat matShininess[] = { 100.0f };             // 반짝임 강함
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
@@ -177,7 +179,7 @@ void MyDisplay_Old(){
     glutSwapBuffers();
 }
 */
-
+/*
 // --------------------------
 // 리쉐이프 콜백
 // --------------------------
@@ -273,3 +275,4 @@ int main(int argc, char** argv) {
     if (quad) gluDeleteQuadric(quad);
     return 0;
 }
+*/

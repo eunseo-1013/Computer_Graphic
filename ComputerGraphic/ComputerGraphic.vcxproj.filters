@@ -48,6 +48,9 @@
     <ClCompile Include="plant_background.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="hand.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

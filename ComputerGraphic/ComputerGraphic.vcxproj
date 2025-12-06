@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\Project43\Project43\hw4.cpp" />
     <ClCompile Include="add_light_tomato_gpt.cpp" />
     <ClCompile Include="cupObject.cpp" />
+    <ClCompile Include="hand.cpp" />
     <ClCompile Include="hw6.cpp" />
     <ClCompile Include="hw7.cpp" />
     <ClCompile Include="hw8.cpp" />
