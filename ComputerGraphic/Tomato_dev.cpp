@@ -7,6 +7,7 @@
 #include <math.h>
 #include "glaux.h"
 #include "loadTexture.h"
+#include "gauge_circle.h"
 
 
 /// 1 . loadtexture 합치기 
@@ -15,7 +16,7 @@
 /// 4. skybox 이용해서 모든 화면에 배경 추가 하기 
 /// 5. 클릭하면 게이지 바 올라가기
 /// 6. 조작 통일하기
-/// 1,6 -> 3,4 
+/// 3,4  ->  5,2
 
 
 
@@ -434,7 +435,13 @@ void MyDisplay() {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
     gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
+ 
+ 
+
+    // 중심 (400, 300), 반지름 150, 두께 30
+   
 
     GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -487,6 +494,40 @@ void MyDisplay() {
         TomatoDisplay(current_height, current_angle, count);
     }
 
+   
+
+    // ------------------------------
+    // 2) 2D HUD 모드로 변경
+    // ------------------------------
+    // 식물 위 gauge 높이
+    float gaugeHeight = 1.1f;
+
+    // 게이지는 조명 영향받으면 3D처럼 보이기 때문에 OFF
+    glDisable(GL_LIGHTING);
+
+    // 깊이 테스트만 끄기!
+    glDisable(GL_DEPTH_TEST);
+
+    glPushMatrix();
+
+    // 식물의 위 위치
+    glTranslatef(-0.31f, gaugeHeight, 0.0f);
+
+    // 카메라를 바라보도록 (지글거림 해결 핵심)
+    //billboardToCamera();
+
+    // 화면 크기 조절
+    glScalef(0.4f, 0.4f, 0.4f);
+
+    drawCircularGauge(0.8f, 0.5f, 0.6f, 0.2f, g_value);
+
+    glPopMatrix();
+
+    // 원래 상태 복구
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+
+
     glutSwapBuffers();
 }
 
@@ -506,6 +547,10 @@ void Mouse(int button, int state, int x, int y) {
             isDragging = true;
             prevX = x;
             prevY = y;
+            g_value += 0.1f;
+            if (g_value > 1.0f) g_value = 1.0f;  // 최대 1.0
+
+            glutPostRedisplay();
         }
         else {
             isDragging = false;

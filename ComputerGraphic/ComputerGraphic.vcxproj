@@ -165,6 +165,7 @@
     <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cup_noodle.h" />
+    <ClInclude Include="gauge_circle.h" />
     <ClInclude Include="loadTexture.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="stb_image.h" />

@@ -3,9 +3,9 @@
 #include <math.h>
 
 
-/*
 
-float g_value = 0.0f;   // 0.0 ~ 1.0 사이 게이지 값
+
+//float g_value = 0.0f;   // 0.0 ~ 1.0 사이 게이지 값
 
 void drawCircularGauge(float cx, float cy,
     float radius, float thickness,
@@ -64,7 +64,7 @@ void drawCircularGauge(float cx, float cy,
     }
     glEnd();
 }
-
+/*
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -119,6 +119,5 @@ int main(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
-
-
 */
+
