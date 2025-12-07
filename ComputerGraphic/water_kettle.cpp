@@ -6,7 +6,7 @@
 GLuint waterTextureID = -1;
 
 void loadTexture(void) {
-	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "water.bmp" );
+	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "water3.bmp" );
 
     if( pTextureImage != NULL ) {
         glGenTextures( 1, &waterTextureID );   // 1: 로드할 텍스쳐 1개를 g_textureID에 저장
@@ -147,7 +147,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glScalef(0.05f, 0.2f, 0.05f);      // 폭, 높이, 두께
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    glPopMatrix();
     // 아래 가로 막대
     glPushMatrix();
     glTranslatef(0.23f, 0.35f, 0.0f);
