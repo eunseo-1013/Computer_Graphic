@@ -6,6 +6,7 @@
 #include <iostream>
 #include "control.h"
 #include "Camera.h"
+#include "gauge_circle.h"
 
 using namespace glm;
 
@@ -77,7 +78,19 @@ bool IsKettleInCrosshair() {
 }
 
 
+void mouseClick(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        if (IsKettleInCrosshair())
+        {
+            kettleSelected = !kettleSelected; // 토글
+        }
+    }
+}
 
+
+// 토마토 용
 
 bool IsKettleInCrosshairT() {
     vec3 rayOrigin = cam.eye;
@@ -96,18 +109,8 @@ bool IsKettleInCrosshairT() {
     return (dist < 0.3f);  // 물통 반지름 + 여유
 }
 
-void mouseClick(int button, int state, int x, int y)
-{
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-    {
-        if (IsKettleInCrosshair())
-        {
-            kettleSelected = !kettleSelected; // 토글
-        }
-    }
-}
 
-
+//토마토용
 
 void mouseClickT(int button, int state, int x, int y)
 {
@@ -115,10 +118,22 @@ void mouseClickT(int button, int state, int x, int y)
     {
         if (IsKettleInCrosshairT())
         {
-            kettleSelected = !kettleSelected; // 토글
+            kettleSelected = !kettleSelected;
+
+            if (kettleSelected) {
+                g_value += 0.1f;
+                if (g_value > 1.0f) g_value = 0.0f;  // 최대 1.0
+            }
+            
+           
+
+            glutPostRedisplay();
         }
     }
 }
+
+
+
 
 void mouseMove(int x, int y) {
     if (firstMouse) {

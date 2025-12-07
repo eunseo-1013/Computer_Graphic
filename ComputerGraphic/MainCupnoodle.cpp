@@ -107,9 +107,6 @@ void display() {
   
     DrawWaterKettle(0.8f, 8.851f + kettleLift, -0.2f, waterTime, kettleAngle);
 
-
-
-
     //cup_object();
     DrawCrosshair();
 
@@ -123,7 +120,7 @@ void reshape(int w, int h) {
 }
 
 
-int main33(int argc, char** argv) {
+int CupNoodleMain(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(windowWidth, windowHeight);

@@ -18,10 +18,10 @@
 /// 2. main 에 페이지 번호 추가하기 
 /// 3. 게이지 바 추가하기 o
 /// 4. skybox 이용해서 모든 화면에 배경 추가 하기  <-  ??? 안돼
-/// 5. 클릭하면 게이지 바 올라가기 
+/// 5. 클릭하면 게이지 바 올라가기 o
 /// 6. 조작 통일하기 o
 /// 7. 물통 불러오기  o
-/// 4 ? -> 7 ->  5,2
+/// 4 ? -> 5,2
 
 // 마우스 회전 관련
 
@@ -169,7 +169,7 @@ bool InitTextures()
 // ------------------------------
 // main
 // ------------------------------
-int main(int argc, char** argv)
+int TomatoMain(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
