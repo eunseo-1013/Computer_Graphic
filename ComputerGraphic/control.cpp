@@ -10,6 +10,8 @@
 using namespace glm;
 
 
+
+vec3 gKettleBasePos = vec3(0.8f, 0.8f, -0.2f);
 camera cam;
 
 int windowWidth = 1280;
@@ -50,6 +52,11 @@ void keyboardUp(unsigned char key, int x, int y) {
     keys[key] = false;
 }
 
+
+
+
+
+// 물병 위치 하드코딩 수정 필요!!
 bool IsKettleInCrosshair() {
     vec3 rayOrigin = cam.eye;
     vec3 rayDir = normalize(cam.at - cam.eye);
@@ -69,11 +76,44 @@ bool IsKettleInCrosshair() {
     return (dist < 0.3f); // 허용 오차 (물병 반지름)
 }
 
+
+
+
+bool IsKettleInCrosshairT() {
+    vec3 rayOrigin = cam.eye;
+    vec3 rayDir = normalize(cam.at - cam.eye);
+
+    // 물통 월드 위치 (그리는 위치와 100% 동일)
+    vec3 kettlePos = gKettleBasePos + vec3(0.0f, kettleLift, 0.0f);
+
+    vec3 toKettle = kettlePos - rayOrigin;
+    float proj = dot(toKettle, rayDir);
+    if (proj < 0.0f) return false;   // 카메라 뒤에 있으면 탈락
+
+    vec3 closestPoint = rayOrigin + proj * rayDir;
+    float dist = length(kettlePos - closestPoint);
+
+    return (dist < 0.3f);  // 물통 반지름 + 여유
+}
+
 void mouseClick(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         if (IsKettleInCrosshair())
+        {
+            kettleSelected = !kettleSelected; // 토글
+        }
+    }
+}
+
+
+
+void mouseClickT(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        if (IsKettleInCrosshairT())
         {
             kettleSelected = !kettleSelected; // 토글
         }

@@ -104,8 +104,11 @@ void display() {
     // 컵라면
     DrawCupNoodleScene();
     UpdateWaterKettle();
-    // 물통
+  
     DrawWaterKettle(0.8f, 8.851f + kettleLift, -0.2f, waterTime, kettleAngle);
+
+
+
 
     //cup_object();
     DrawCrosshair();

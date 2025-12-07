@@ -15,6 +15,7 @@ extern camera cam;
 extern int windowWidth;
 extern int windowHeight;
 extern bool keys[256];
+extern vec3 gKettleBasePos;
 
 extern bool firstMouse;
 extern float lastX;
@@ -33,8 +34,9 @@ void keyboard(unsigned char key, int x, int y);
 void specialKeys(int key, int x, int y);
 void keyboardUp(unsigned char key, int x, int y);
 
+bool IsKettleInCrosshairT();
 bool IsKettleInCrosshair();
-
+void mouseClickT(int button, int state, int x, int y);
 void mouseClick(int button, int state, int x, int y);
 
 void mouseMove(int x, int y);

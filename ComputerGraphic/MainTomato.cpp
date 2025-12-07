@@ -108,7 +108,11 @@ void TomatoSceneDisplay()
 
     // --- 물주전자 (토마토와 같은 월드 공간) ---
     UpdateWaterKettle();
-    DrawWaterKettle(0.8f, 0.8f + kettleLift, -0.2f, waterTime, kettleAngle);
+    vec3 pos = gKettleBasePos + glm::vec3(0.0f, kettleLift, 0.0f);
+    //DrawWaterKettle(0.8f, 0.8f + kettleLift, -0.2f, waterTime, kettleAngle);
+
+    DrawWaterKettle(pos.x, pos.y, pos.z, waterTime, kettleAngle);
+
 
     glPopMatrix(); // 씬 전체 매트릭스
 
@@ -165,7 +169,7 @@ bool InitTextures()
 // ------------------------------
 // main
 // ------------------------------
-int maint(int argc, char** argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -208,7 +212,7 @@ int maint(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardUp);
     glutSpecialFunc(specialKeys);
-    glutMouseFunc(mouseClick);
+    glutMouseFunc(mouseClickT);
     glutPassiveMotionFunc(mouseMove);
     glutSetCursor(GLUT_CURSOR_NONE);
 
