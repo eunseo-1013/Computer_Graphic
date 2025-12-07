@@ -11,7 +11,7 @@
 #include "skybox.h"
 #include "Camera.h"
 #include "control.h"
-
+#include "water_kettle.h"
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 
 /// 3. 게이지  바 추가하기 o
@@ -430,116 +430,6 @@ void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
     glPopMatrix();
 }
 
-//------------------------------
-// 디스플레이
-//------------------------------
-void TomatoDisplay() {
-   
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    //DrawSkybox();
-    //gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
-    gluLookAt(
-        cam.eye.x, cam.eye.y, cam.eye.z,
-        cam.at.x, cam.at.y, cam.at.z,
-        cam.up.x, cam.up.y, cam.up.z
-    );
- 
-    // 배경
-    DrawSkybox();
-
-    // 중심 (400, 300), 반지름 150, 두께 30
-   
-
-    GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    glRotatef(angleX, 1, 0, 0);
-    glRotatef(angleY, 0, 1, 0);
-
-    // 조명은 항상 켜둠
-    glEnable(GL_LIGHTING);
-
-    // 화분 + 흙
-    glPushMatrix();
-    glTranslatef(0, -0.2f, 0);
-    glRotatef(90, 1, 0, 0);
-    FlowerPot(0.45f);
-    glRotatef(-90, 1, 0, 0);
-    glRotatef(90, -1, 0, 0);
-    Soild();
-    glPopMatrix();
-
-    // 줄기
-    glPushMatrix();
-    glRotatef(90, -1, 0, 0);
-    glTranslatef(0.0f, 0, -0.5f);
-    Stem(0.03f, 1.5f, 30);
-    glPopMatrix();
-
-    // 맨 아래 큰 잎 한 장
-    float initial_height = 0.1f;
-    float height_step = 0.3f;
-    float angle_step = 70.0f;
-    int   total_clusters = 4;
-    float angle_step2 = 80.0f;
-
-    glPushMatrix();
-    glRotatef(angle_step2, 0, 1, 0);
-    glRotatef(90, 1, 0, 0);
-    DrawTomatoLeaf(0.08f, 0.04f);
-    glPopMatrix();
-
-    // 토마토 묶음들
-    for (int i = 0; i < total_clusters; i++) {
-        float current_height = initial_height + (i * height_step);
-        float current_angle = i * angle_step;
-        int count = (i < 2) ? 2 : 1;
-        if (i == 3) {
-            count = 2;
-            current_height = initial_height + height_step;
-        }
-        TomatoDisplay(current_height, current_angle, count);
-    }
-
-   
-
-    // ------------------------------
-    // 2) 2D HUD 모드로 변경
-    // ------------------------------
-    // 식물 위 gauge 높이
-    float gaugeHeight = 1.1f;
-
-    // 게이지는 조명 영향받으면 3D처럼 보이기 때문에 OFF
-    glDisable(GL_LIGHTING);
-
-    // 깊이 테스트만 끄기!
-    glDisable(GL_DEPTH_TEST);
-
-    glPushMatrix();
-
-    // 식물의 위 위치
-    glTranslatef(-0.31f, gaugeHeight, 0.0f);
-
-    // 카메라를 바라보도록 (지글거림 해결 핵심)
-    //billboardToCamera();
-
-    // 화면 크기 조절
-    glScalef(0.4f, 0.4f, 0.4f);
-
-    drawCircularGauge(0.8f, 0.5f, 0.6f, 0.2f, g_value);
-
-    glPopMatrix();
-
-    // 원래 상태 복구
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
-
-
-    glutSwapBuffers();
-}
 
 
 

@@ -140,14 +140,14 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glColor3f(0.1f, 0.1f, 0.1f);
     glPushMatrix();
     glTranslatef(0.15f, 0.45f, 0.0f);   // 포트 오른쪽에 붙이기
-
+   
     // 세로 막대
     glPushMatrix();
     glTranslatef(0.1f, 0.0f, 0.0f);
     glScalef(0.05f, 0.2f, 0.05f);      // 폭, 높이, 두께
     glutSolidCube(1.0f);
     glPopMatrix();
-
+    glPopMatrix();
     // 아래 가로 막대
     glPushMatrix();
     glTranslatef(0.23f, 0.35f, 0.0f);
@@ -175,6 +175,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glPopMatrix();
   
     glPopMatrix();
+
     glPopAttrib();
 }
 

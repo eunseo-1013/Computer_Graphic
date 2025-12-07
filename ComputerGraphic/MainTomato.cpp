@@ -11,59 +11,142 @@
 #include "Camera.h"
 #include "control.h"
 #include "Tomato.h"
+#include "water_kettle.h"
+
+
+/// 1 loadtexture 합치기  o
+/// 2. main 에 페이지 번호 추가하기 
+/// 3. 게이지  바 추가하기 o
+/// 4. skybox 이용해서 모든 화면에 배경 추가 하기  <-  ??? 안돼
+/// 5. 클릭하면 게이지 바 올라가기 
+/// 6. 조작 통일하기 0
+/// 7. 물통 불러오기 
+/// 4 ? -> 7 ->  5,2
+
+// 마우스 회전 관련
 
 
 
-//------------------------------
-// 기타 콜백
-//------------------------------
-void MyReshape(int w, int h) {
-    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+// ------------------------------
+// 디스플레이
+// ------------------------------
+void TomatoSceneDisplay()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // 카메라
+    gluLookAt(
+        cam.eye.x, cam.eye.y, cam.eye.z,
+        cam.at.x, cam.at.y, cam.at.z,
+        cam.up.x, cam.up.y, cam.up.z
+    );
+
+    // 1) 배경 (원하면 사용)
+    //DrawSkybox();
+
+    // 2) 본 씬(토마토 + 물통)
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+
+    glPushMatrix();
+
+    // 조명 위치
+    GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+    // --- 화분 + 흙 ---
+    glPushMatrix();
+    glTranslatef(0.0f, -0.2f, 0.0f);
+    glRotatef(90.0f, 1, 0, 0);
+    FlowerPot(0.45f);
+    glRotatef(-90.0f, 1, 0, 0);
+    glRotatef(90.0f, -1, 0, 0);
+    Soild();
+    glPopMatrix();
+
+    // --- 줄기 ---
+    glPushMatrix();
+    glRotatef(90.0f, -1, 0, 0);
+    glTranslatef(0.0f, 0.0f, -0.5f);
+    Stem(0.03f, 1.5f, 30);
+    glPopMatrix();
+
+    // --- 맨 아래 큰 잎 한 장 ---
+    float initial_height = 0.1f;
+    float height_step = 0.3f;
+    float angle_step = 70.0f;
+    int   total_clusters = 4;
+    float angle_step2 = 80.0f;
+
+    glPushMatrix();
+    glRotatef(angle_step2, 0, 1, 0);
+    glRotatef(90.0f, 1, 0, 0);
+    DrawTomatoLeaf(0.08f, 0.04f);
+    glPopMatrix();
+
+    // --- 토마토 묶음들 ---
+    for (int i = 0; i < total_clusters; ++i) {
+        float current_height = initial_height + (i * height_step);
+        float current_angle = i * angle_step;
+        int count = (i < 2) ? 2 : 1;
+        if (i == 3) {
+            count = 2;
+            current_height = initial_height + height_step;
+        }
+        TomatoDisplay(current_height, current_angle, count);  // Tomato.h 쪽 함수
+    }
+
+
+    static float t = 0.0f;
+    t += 0.01f;
+    waterTime = t;
+
+    // --- 물주전자 (토마토와 같은 월드 공간) ---
+    UpdateWaterKettle();
+    DrawWaterKettle(0.8f, 0.8f + kettleLift, -0.2f, waterTime, kettleAngle);
+
+    glPopMatrix(); // 씬 전체 매트릭스
+
+    // 3) HUD 게이지 (조명/깊이 끄고)
+    float gaugeHeight = 1.1f;
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+
+    glPushMatrix();
+    glTranslatef(-0.31f, gaugeHeight, 0.0f);
+    glScalef(0.4f, 0.4f, 0.4f);
+    drawCircularGauge(0.8f, 0.5f, 0.6f, 0.2f, g_value);
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+
+    glutSwapBuffers();
+}
+
+// ------------------------------
+// 리쉐이프
+// ------------------------------
+void MyReshape(int w, int h)
+{
+    if (h == 0) h = 1;
+
+    glViewport(0, 0, w, h);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (GLfloat)w / (GLfloat)h, 0.1, 100);
+    gluPerspective(45.0f, (float)w / (float)h, 0.1f, 100.0f);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
-
-
-
-/*
-void Mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON) {
-        if (state == GLUT_DOWN) {
-            isDragging = true;
-            prevX = x;
-            prevY = y;
-            g_value += 0.1f;
-            if (g_value > 1.0f) g_value = 1.0f;  // 최대 1.0
-
-            glutPostRedisplay();
-        }
-        else {
-            isDragging = false;
-        }
-    }
-}
-
-void Motion(int x, int y) {
-    if (isDragging) {
-        int dx = x - prevX;
-        int dy = y - prevY;
-
-        angleY += dx * 0.5f;
-        angleX += dy * 0.5f;
-
-        prevX = x;
-        prevY = y;
-
-        glutPostRedisplay();
-    }
-}
-
-
-*/
-
-
+// ------------------------------
+// 텍스처 초기화 (토마토용)
+// ------------------------------
 bool InitTextures()
 {
     gLeafTex = gLoadTexture("texture/24leaf_texture.bmp");
@@ -77,10 +160,9 @@ bool InitTextures()
     return true;
 }
 
-
-//------------------------------
+// ------------------------------
 // main
-//------------------------------
+// ------------------------------
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -90,48 +172,45 @@ int main(int argc, char** argv)
 
     glutCreateWindow("Cherry Tomato Plant (Spiral)");
 
+    glewInit();
+    glEnable(GL_TEXTURE_2D);
 
-    InitSkybox();
-    // ★ 카메라 초기 세팅
+    // ★ 카메라 초기 세팅 (원하면 값 조절 가능)
     cam.eye = vec3(0.0f, 3.0f, 3.0f);
     cam.at = vec3(0.0f, 0.5f, 0.0f);
     cam.up = vec3(0.0f, 1.0f, 0.0f);
-    cam.UpdateCamera();   // 이런 함수가 있다면 호출
+    cam.UpdateCamera();
 
-
+    // 스카이박스 텍스처 (원하면 사용)
+    //InitSkybox();
 
     glShadeModel(GL_SMOOTH);
     SetupLighting();
-
     glEnable(GL_DEPTH_TEST);
 
     if (!InitTextures()) {
         return -1;
     }
 
-
-    //LoadTomatoTexture("C:/Users/eunse/source/repos/ComputerGraphic/tomato_texture.bmp");
-
+    // 물주전자 텍스처 초기화
+    InitWaterKettleTextures();
 
     glClearColor(1, 1, 1, 1);
 
     if (!quad) quad = gluNewQuadric();
 
-    glutDisplayFunc(TomatoDisplay);
-
+    // 콜백 등록
+    glutDisplayFunc(TomatoSceneDisplay);
     glutReshapeFunc(MyReshape);
-    /*
-    glutMouseFunc(Mouse);
-    glutMotionFunc(Motion);*/
 
-
-    //glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardUp);
     glutSpecialFunc(specialKeys);
     glutMouseFunc(mouseClick);
     glutPassiveMotionFunc(mouseMove);
     glutSetCursor(GLUT_CURSOR_NONE);
+
+    // 카메라 움직임 타이머
     glutTimerFunc(16, moveCamera, 0);
 
     glutMainLoop();

@@ -64,6 +64,10 @@ void drawCircularGauge(float cx, float cy,
     }
     glEnd();
 }
+
+
+
+
 /*
 void display(void)
 {
