@@ -7,13 +7,14 @@
 #include "control.h"
 #include "Camera.h"
 
+using namespace glm;
 
 
 camera cam;
 
 int windowWidth = 1280;
 int windowHeight = 720;
-bool keys[256];
+bool keys[256] = { false };
 
 bool firstMouse = true;
 float lastX = windowWidth / 2.0;

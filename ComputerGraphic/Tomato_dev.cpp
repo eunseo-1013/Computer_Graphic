@@ -9,6 +9,7 @@
 #include "loadTexture.h"
 #include "gauge_circle.h"
 #include "skybox.h"
+#include "Camera.h"
 #include "control.h"
 
 /// 1 loadtexture 합치기  o
@@ -233,7 +234,7 @@ void Stem(float r, float h, float slice = 30) {
 
     // 텍스처 행렬 복구
     glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
+    //glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 
     // 다른 도형에 영향 안 가게 정리
@@ -432,13 +433,18 @@ void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
 // 디스플레이
 //------------------------------
 void MyDisplay() {
-    //InitSkybox();
+   
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+   
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
-    gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
+    //DrawSkybox();
+    //gluLookAt(0, 3, 3, 0, 0, 0, 0, 1, 0);
+    gluLookAt(
+        cam.eye.x, cam.eye.y, cam.eye.z,
+        cam.at.x, cam.at.y, cam.at.z,
+        cam.up.x, cam.up.y, cam.up.z
+    );
  
     // 배경
     DrawSkybox();
@@ -546,7 +552,7 @@ void MyReshape(int w, int h) {
     glLoadIdentity();
     gluPerspective(45, (GLfloat)w / (GLfloat)h, 0.1, 100);
 }
-
+/*
 void Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
@@ -580,27 +586,55 @@ void Motion(int x, int y) {
 }
 
 
+*/
+
+
+bool InitTextures()
+{
+    gLeafTex = gLoadTexture("texture/24leaf_texture.bmp");
+    gSoilTex = gLoadTexture("texture/soild_texture.bmp");
+    gStemTex = gLoadTexture("texture/stem_texture.bmp");
+
+    if (!gLeafTex || !gSoilTex || !gStemTex) {
+        printf("텍스처 로드 실패\n");
+        return false;
+    }
+    return true;
+}
 
 
 //------------------------------
 // main
 //------------------------------
-int main22(int argc, char** argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
+  
     glutCreateWindow("Cherry Tomato Plant (Spiral)");
+
+
+    InitSkybox();
+    // ★ 카메라 초기 세팅
+    cam.eye = vec3(0.0f, 3.0f, 3.0f);
+    cam.at = vec3(0.0f, 0.5f, 0.0f);
+    cam.up = vec3(0.0f, 1.0f, 0.0f);
+    cam.UpdateCamera();   // 이런 함수가 있다면 호출
+  
+   
 
     glShadeModel(GL_SMOOTH);
     SetupLighting();
 
     glEnable(GL_DEPTH_TEST);
+    
+    if (!InitTextures()) {
+        return -1;
+    }
 
-     gLeafTex= gLoadTexture("texture/24leaf_texture.bmp");
-     gSoilTex=  gLoadTexture("texture/soild_texture.bmp");
-     gStemTex= gLoadTexture("texture/stem_texture.bmp");
+    
     //LoadTomatoTexture("C:/Users/eunse/source/repos/ComputerGraphic/tomato_texture.bmp");
    
 
@@ -609,11 +643,21 @@ int main22(int argc, char** argv)
     if (!quad) quad = gluNewQuadric();
 
     glutDisplayFunc(MyDisplay);
-
+    
     glutReshapeFunc(MyReshape);
-
+    /*
     glutMouseFunc(Mouse);
-    glutMotionFunc(Motion);
+    glutMotionFunc(Motion);*/
+
+
+    //glutReshapeFunc(reshape);
+    glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboardUp);
+    glutSpecialFunc(specialKeys);
+    glutMouseFunc(mouseClick);
+    glutPassiveMotionFunc(mouseMove);
+    glutSetCursor(GLUT_CURSOR_NONE);
+    glutTimerFunc(16, moveCamera, 0);
 
     glutMainLoop();
     return 0;
