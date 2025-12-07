@@ -15,10 +15,11 @@
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 
 /// 3. 게이지  바 추가하기 o
-/// 4. skybox 이용해서 모든 화면에 배경 추가 하기 
+/// 4. skybox 이용해서 모든 화면에 배경 추가 하기  <-  ??? 안돼
 /// 5. 클릭하면 게이지 바 올라가기 
-/// 6. 조작 통일하기
-///6 -> 4  ->  5,2
+/// 6. 조작 통일하기 0
+/// 7. 물통 불러오기 
+/// 4  ->  5,2
 
 
 
@@ -432,7 +433,7 @@ void TomatoDisplay(float stem_h, float angle_y, int count = 2) {
 //------------------------------
 // 디스플레이
 //------------------------------
-void MyDisplay() {
+void TomatoDisplay() {
    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
@@ -542,125 +543,5 @@ void MyDisplay() {
 
 
 
-
-//------------------------------
-// 기타 콜백
-//------------------------------
-void MyReshape(int w, int h) {
-    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, (GLfloat)w / (GLfloat)h, 0.1, 100);
-}
-/*
-void Mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON) {
-        if (state == GLUT_DOWN) {
-            isDragging = true;
-            prevX = x;
-            prevY = y;
-            g_value += 0.1f;
-            if (g_value > 1.0f) g_value = 1.0f;  // 최대 1.0
-
-            glutPostRedisplay();
-        }
-        else {
-            isDragging = false;
-        }
-    }
-}
-
-void Motion(int x, int y) {
-    if (isDragging) {
-        int dx = x - prevX;
-        int dy = y - prevY;
-
-        angleY += dx * 0.5f;
-        angleX += dy * 0.5f;
-
-        prevX = x;
-        prevY = y;
-
-        glutPostRedisplay();
-    }
-}
-
-
-*/
-
-
-bool InitTextures()
-{
-    gLeafTex = gLoadTexture("texture/24leaf_texture.bmp");
-    gSoilTex = gLoadTexture("texture/soild_texture.bmp");
-    gStemTex = gLoadTexture("texture/stem_texture.bmp");
-
-    if (!gLeafTex || !gSoilTex || !gStemTex) {
-        printf("텍스처 로드 실패\n");
-        return false;
-    }
-    return true;
-}
-
-
-//------------------------------
-// main
-//------------------------------
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(0, 0);
-  
-    glutCreateWindow("Cherry Tomato Plant (Spiral)");
-
-
-    InitSkybox();
-    // ★ 카메라 초기 세팅
-    cam.eye = vec3(0.0f, 3.0f, 3.0f);
-    cam.at = vec3(0.0f, 0.5f, 0.0f);
-    cam.up = vec3(0.0f, 1.0f, 0.0f);
-    cam.UpdateCamera();   // 이런 함수가 있다면 호출
-  
-   
-
-    glShadeModel(GL_SMOOTH);
-    SetupLighting();
-
-    glEnable(GL_DEPTH_TEST);
-    
-    if (!InitTextures()) {
-        return -1;
-    }
-
-    
-    //LoadTomatoTexture("C:/Users/eunse/source/repos/ComputerGraphic/tomato_texture.bmp");
-   
-
-    glClearColor(1, 1, 1, 1);
-
-    if (!quad) quad = gluNewQuadric();
-
-    glutDisplayFunc(MyDisplay);
-    
-    glutReshapeFunc(MyReshape);
-    /*
-    glutMouseFunc(Mouse);
-    glutMotionFunc(Motion);*/
-
-
-    //glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutKeyboardUpFunc(keyboardUp);
-    glutSpecialFunc(specialKeys);
-    glutMouseFunc(mouseClick);
-    glutPassiveMotionFunc(mouseMove);
-    glutSetCursor(GLUT_CURSOR_NONE);
-    glutTimerFunc(16, moveCamera, 0);
-
-    glutMainLoop();
-    return 0;
-}
 
 
