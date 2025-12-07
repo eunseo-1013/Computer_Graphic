@@ -18,16 +18,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="cup_noodle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Tomato_dev.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="add_light_tomato_gpt.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="cupObject.cpp">
@@ -46,6 +40,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MainTomato.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="control.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="loadTexture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainCupnoodle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,6 +78,21 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="control.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="gauge_circle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="loadTexture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tomato.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,10 +33,13 @@
 void TomatoSceneDisplay()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
     // 카메라
     gluLookAt(
         cam.eye.x, cam.eye.y, cam.eye.z,
@@ -45,13 +48,18 @@ void TomatoSceneDisplay()
     );
     
     // 1) 배경 (원하면 사용)
-    //DrawSkybox();
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glPushMatrix();
+    DrawSkybox();
+    glPopMatrix();
 
     // 2) 본 씬(토마토 + 물통)
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
 
     glPushMatrix();
+    glTranslatef(0.0f, 9.f, 0.0f);
 
     // 조명 위치
     GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
@@ -117,7 +125,7 @@ void TomatoSceneDisplay()
     glPopMatrix(); // 씬 전체 매트릭스
 
     // 3) HUD 게이지 (조명/깊이 끄고)
-    float gaugeHeight = 1.1f;
+    float gaugeHeight = 10.1f;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
@@ -141,13 +149,10 @@ void MyReshape(int w, int h)
 {
     if (h == 0) h = 1;
 
+    windowWidth = w;
+    windowHeight = h;
+
     glViewport(0, 0, w, h);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0f, (float)w / (float)h, 0.1f, 100.0f);
-
-    glMatrixMode(GL_MODELVIEW);
 }
 
 // ------------------------------
@@ -182,13 +187,13 @@ int TomatoMain(int argc, char** argv)
     glEnable(GL_TEXTURE_2D);
 
     // ★ 카메라 초기 세팅 (원하면 값 조절 가능)
-    cam.eye = vec3(0.0f, 3.0f, 3.0f);
-    cam.at = vec3(0.0f, 0.5f, 0.0f);
+    cam.eye = vec3(0.0f, 10.0f, 3.0f);
+    cam.at = vec3(0.0f, 10.0f, 0.0f);
     cam.up = vec3(0.0f, 1.0f, 0.0f);
     cam.UpdateCamera();
 
     // 스카이박스 텍스처 (원하면 사용)
-    //InitSkybox();
+    InitSkybox();
 
     glShadeModel(GL_SMOOTH);
     SetupLighting();
