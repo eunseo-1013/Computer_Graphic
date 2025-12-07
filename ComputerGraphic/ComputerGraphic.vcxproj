@@ -147,7 +147,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="add_light_tomato_gpt.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="cupObject.cpp" />
     <ClCompile Include="gauge_circle.cpp" />

@@ -124,3 +124,46 @@ void moveCamera(int value) {
     glutPostRedisplay();
     glutTimerFunc(16, moveCamera, 0);
 }
+
+
+
+void DrawCrosshair()
+{
+    float cx = windowWidth / 2.0f;
+    float cy = windowHeight / 2.0f;
+    float radius = 4.0f;   // 점 크기 (픽셀 단위)
+    int segments = 32;     // 원 부드럽게
+    float aspect = (float)windowHeight / (float)windowWidth;
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, windowWidth, 0, windowHeight);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+
+    glColor3f(0.0f, .0f, .0f); // 흰색 원
+
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy);  // 중심
+    for (int i = 0; i <= segments; i++) {
+        float angle = i * 2.0f * 3.1415926f / segments;
+        float x = cx + cos(angle) * radius * aspect;
+        float y = cy + sin(angle) * radius * aspect;
+        glVertex2f(x, y);
+    }
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}

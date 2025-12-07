@@ -55,8 +55,3 @@ void TomatoDisplay(float stem_h, float angle_y, int count = 2);
 
 void TomatoDisplay();
 
-
-//------------------------------
-// 디스플레이
-//------------------------------
-void TomatoDisplay();

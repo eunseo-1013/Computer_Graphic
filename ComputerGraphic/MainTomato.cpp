@@ -16,11 +16,11 @@
 
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 
-/// 3. 게이지  바 추가하기 o
+/// 3. 게이지 바 추가하기 o
 /// 4. skybox 이용해서 모든 화면에 배경 추가 하기  <-  ??? 안돼
 /// 5. 클릭하면 게이지 바 올라가기 
-/// 6. 조작 통일하기 0
-/// 7. 물통 불러오기 
+/// 6. 조작 통일하기 o
+/// 7. 물통 불러오기  o
 /// 4 ? -> 7 ->  5,2
 
 // 마우스 회전 관련
@@ -43,7 +43,7 @@ void TomatoSceneDisplay()
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z
     );
-
+    
     // 1) 배경 (원하면 사용)
     //DrawSkybox();
 
@@ -100,6 +100,8 @@ void TomatoSceneDisplay()
     }
 
 
+   
+
     static float t = 0.0f;
     t += 0.01f;
     waterTime = t;
@@ -124,7 +126,7 @@ void TomatoSceneDisplay()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-
+    DrawCrosshair();
     glutSwapBuffers();
 }
 
@@ -163,15 +165,15 @@ bool InitTextures()
 // ------------------------------
 // main
 // ------------------------------
-int main(int argc, char** argv)
+int maint(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
 
-    glutCreateWindow("Cherry Tomato Plant (Spiral)");
-
+    glutCreateWindow("Tomato");
+    glutFullScreen();
     glewInit();
     glEnable(GL_TEXTURE_2D);
 
