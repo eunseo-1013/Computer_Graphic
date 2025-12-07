@@ -114,16 +114,16 @@ void drawEggFlake() {
 }
 
 void InitCupNoodleTextures() {
-    noodleTextureID = loadTexture("noodle.bmp");
+    noodleTextureID = loadTexture("texture/noodle.bmp");
     if (noodleTextureID == 0) cerr << "Failed to load noodleTexture." << endl;
 
-    cupTextureID = loadTexture("styrofoam.bmp");
+    cupTextureID = loadTexture("texture/styrofoam.bmp");
     if (cupTextureID == 0) cerr << "Failed to load cupTexture." << endl;
 
-    greenTextureID = loadTexture("green.png");
+    greenTextureID = loadTexture("texture/green.png");
     if (greenTextureID == 0) cerr << "Failed to load greenTexture." << endl;
 
-    eggTextureID = loadTexture("egg.png");
+    eggTextureID = loadTexture("texture/egg.png");
     if (eggTextureID == 0) cerr << "Failed to load eggTexture." << endl;
 }
 

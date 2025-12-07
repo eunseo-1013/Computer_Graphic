@@ -24,10 +24,28 @@
     <ClCompile Include="cup_noodle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="water_kettle.cpp">
+    <ClCompile Include="Tomato_dev.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="skybox.cpp">
+    <ClCompile Include="add_light_tomato_gpt.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="cupObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="plant_background.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="hand.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="gauge_circle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlantObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainTomato.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,6 +53,15 @@
     <ClInclude Include="Camera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Downloads\OpenGLProjects\include\glaux.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClCompile Include="water_kettle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClInclude Include="stb_image.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>

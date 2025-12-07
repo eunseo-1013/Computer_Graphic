@@ -25,12 +25,12 @@ void InitSkybox( ) {  // Bitmap 이미지 6개를 호출하여 Texture 이미지로 변환한다.
      AUX_RGBImageRec *texRec[6];
      memset(texRec, 0, sizeof(void *)*6);                                                  
 
-     if((texRec[0]=LoadBMP("posz.bmp")) &&
-       (texRec[1]=LoadBMP("negz.bmp")) &&
-       (texRec[2]=LoadBMP("posx.bmp")) &&
-       (texRec[3]=LoadBMP("negx.bmp")) &&
-       (texRec[4]=LoadBMP("posy.bmp")) &&
-       (texRec[5]=LoadBMP("negy.bmp")) ) {
+     if((texRec[0]=LoadBMP("texture/posz.bmp")) &&
+       (texRec[1]=LoadBMP("texture/negz.bmp")) &&
+       (texRec[2]=LoadBMP("texture/posx.bmp")) &&
+       (texRec[3]=LoadBMP("texture/negx.bmp")) &&
+       (texRec[4]=LoadBMP("texture/posy.bmp")) &&
+       (texRec[5]=LoadBMP("texture/negy.bmp")) ) {
 
           for(int i=0; i<6; i++) {
               printf("텍스처 로드: index %d (%d x %d)\n",
