@@ -6,7 +6,7 @@
 GLuint waterTextureID = -1;
 
 void loadTexture(void) {
-	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "texture/water.bmp" );
+	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "texture/water3.bmp" );
 
     if( pTextureImage != NULL ) {
         glGenTextures( 1, &waterTextureID );   // 1: 로드할 텍스쳐 1개를 g_textureID에 저장
