@@ -159,6 +159,7 @@
     <ClCompile Include="PlantObject.cpp" />
     <ClCompile Include="plant_background.cpp" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="ThrowWater.cpp" />
     <ClCompile Include="Tomato_dev.cpp" />
     <ClCompile Include="water_kettle.cpp" />
   </ItemGroup>
