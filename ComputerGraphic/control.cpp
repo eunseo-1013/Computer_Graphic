@@ -45,10 +45,9 @@ void specialKeys(int key, int x, int y) {
         kettleAngle -= 1.5f;
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
     }
-
     if (kettleAngle > 40.0f && kettleAngle < 50.0f) {
         g_value += 0.1f;
-        if (g_value > 1.0f) g_value = 0.0f;  // 최대 1.0
+        if (g_value >=1.0f) g_value = 1.0f;  // 최대 1.0
     }
     glutPostRedisplay();
 }
