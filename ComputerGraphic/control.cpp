@@ -41,10 +41,14 @@ void specialKeys(int key, int x, int y) {
         kettleAngle += 1.5f;
         if (kettleAngle > 50.0f) kettleAngle = 50.0f;
     }
-
     if (key == GLUT_KEY_RIGHT) {
         kettleAngle -= 1.5f;
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
+    }
+
+    if (kettleAngle > 40.0f && kettleAngle < 50.0f) {
+        g_value += 0.1f;
+        if (g_value > 1.0f) g_value = 0.0f;  // 최대 1.0
     }
     glutPostRedisplay();
 }
@@ -119,11 +123,6 @@ void mouseClickT(int button, int state, int x, int y)
         if (IsKettleInCrosshairT())
         {
             kettleSelected = !kettleSelected;
-
-            if (kettleSelected) {
-                g_value += 0.1f;
-                if (g_value > 1.0f) g_value = 0.0f;  // 최대 1.0
-            }
             
            
 
