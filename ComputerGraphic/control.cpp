@@ -12,7 +12,7 @@ using namespace glm;
 
 
 
-vec3 gKettleBasePos = vec3(0.8f, 0.8f, -0.2f);
+vec3 gKettleBasePos = vec3(0.8f, -0.3f, -0.2f);
 camera cam;
 
 int windowWidth = 1280;

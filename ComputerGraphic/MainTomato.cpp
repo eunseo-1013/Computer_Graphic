@@ -46,13 +46,15 @@ void TomatoSceneDisplay()
         cam.at.x, cam.at.y, cam.at.z,
         cam.up.x, cam.up.y, cam.up.z
     );
-    
+
+
     // 1) 배경 (원하면 사용)
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
     glPushMatrix();
     DrawSkybox();
     glPopMatrix();
+    
 
     // 2) 본 씬(토마토 + 물통)
     glEnable(GL_LIGHTING);
@@ -60,6 +62,7 @@ void TomatoSceneDisplay()
 
     glPushMatrix();
     glTranslatef(0.0f, 9.f, 0.0f);
+    glPushMatrix(); // 0,9,0으로 이동 한것!
 
     // 조명 위치
     GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
@@ -114,16 +117,20 @@ void TomatoSceneDisplay()
     t += 0.01f;
     waterTime = t;
 
-    // --- 물주전자 (토마토와 같은 월드 공간) ---
+    // --- 물주전자 (토마토와 같은 월드 공간) --- 0,9,0 이동 한곳!
     UpdateWaterKettle();
     vec3 pos = gKettleBasePos + glm::vec3(0.0f, kettleLift, 0.0f);
     //DrawWaterKettle(0.8f, 0.8f + kettleLift, -0.2f, waterTime, kettleAngle);
 
     DrawWaterKettle(pos.x, pos.y, pos.z, waterTime, kettleAngle);
-
-
+    DrawCrosshair();
+   
+    glPopMatrix(); //0,9,0 pop -> 0,0,0 좌표로 이동
     glPopMatrix(); // 씬 전체 매트릭스
 
+
+  
+    
     // 3) HUD 게이지 (조명/깊이 끄고)
     float gaugeHeight = 10.1f;
 
@@ -138,7 +145,7 @@ void TomatoSceneDisplay()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    DrawCrosshair();
+   
     glutSwapBuffers();
 }
 
@@ -178,10 +185,12 @@ int TomatoMain(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(windowWidth, windowHeight);
+    glutInitWindowPosition(100, 100);
+
 
     glutCreateWindow("Tomato");
+  
     glutFullScreen();
     glewInit();
     glEnable(GL_TEXTURE_2D);
@@ -217,7 +226,7 @@ int TomatoMain(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutKeyboardUpFunc(keyboardUp);
     glutSpecialFunc(specialKeys);
-    glutMouseFunc(mouseClickT);
+    glutMouseFunc(mouseClick);
     glutPassiveMotionFunc(mouseMove);
     glutSetCursor(GLUT_CURSOR_NONE);
 
