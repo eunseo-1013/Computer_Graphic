@@ -147,7 +147,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="activeCupNoodle.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="cupObject.cpp" />
     <ClCompile Include="GameMain.cpp" />
