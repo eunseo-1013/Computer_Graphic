@@ -172,10 +172,14 @@ void Soild() {
         return;
     }
 
+    // 게이지가 올라갈수록 factor가 작아져서 어두워짐
+    float factor = 1.0f - 0.7f * g_value;        // g=0 → 1.0, g=1 → 0.3
+    if (factor < 0.0f) factor = 0.0f;
+
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, gSoilTex);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
+    glColor3f(factor, factor, factor);
     float radius = 0.40f;
     int   slices = 40;
     float z = 0.01f;
