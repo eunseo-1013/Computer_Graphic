@@ -9,6 +9,7 @@
 #include "water_kettle.h"
 #include "skybox.h"
 #include "control.h"
+#include "gauge_circle.h"
 
 
 
@@ -106,6 +107,13 @@ void display() {
     UpdateWaterKettle();
   
     DrawWaterKettle(0.8f, 8.851f + kettleLift, -0.2f, waterTime, kettleAngle);
+    //물: 컵이랑 같은 위치(0, 8.8, 0)로 이동 후 그리기
+    //float gauge = 0.0; // 또는 0.8f 테스트
+    glPushMatrix();
+    glTranslatef(0.0f, 8.8f, 0.0f);
+    waterCupNoodle(g_value);   // ← 여기!
+    glPopMatrix();
+
 
     //cup_object();
     DrawCrosshair();

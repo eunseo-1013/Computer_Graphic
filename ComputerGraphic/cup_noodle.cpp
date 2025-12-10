@@ -10,6 +10,9 @@ GLuint noodleTextureID;
 GLuint cupTextureID;
 GLuint greenTextureID;
 GLuint eggTextureID;
+GLuint activewaterTextureID;
+
+
 
 GLuint loadTexture(const char* filename) {
     GLuint textureID;
@@ -46,6 +49,71 @@ GLuint loadTexture(const char* filename) {
     stbi_image_free(data);
     return textureID;
 }
+
+
+
+void waterCupNoodle(float gauge)
+{
+    if (gauge <= 0.0f) return;
+
+    if (gauge < 0.0f) gauge = 0.0f;
+    if (gauge > 1.0f) gauge = 1.0f;
+
+    const float cupHeight = 0.5f;
+    const float bottomRadius = 0.3f;
+    const float topRadius = 0.35f;
+
+    float waterHeight = cupHeight * gauge;
+    float waterBottomRadius = bottomRadius;
+    float waterTopRadius =
+        bottomRadius + (topRadius - bottomRadius) * (waterHeight / cupHeight);
+
+    glPushMatrix();
+    glRotatef(-90.f, 1, 0, 0);
+    glTranslatef(0.0f, 0.25f, 0.051f);
+
+    float epsilon = 0.001f;
+    glTranslatef(0.0f, 0.0f, epsilon);
+
+    // 조명 제거 + 알파 블렌딩
+    glDisable(GL_LIGHTING);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // -------텍스처 활성화 --------
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, activewaterTextureID);  // 이미 로드된 텍스처 ID 사용
+    //--------------------------------
+
+    // 물 색 + 투명도
+    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+    // ? 텍스처 사용 시 보통 색을 흰색(1,1,1)으로 둬야 텍스처 색이 그대로 나옴
+
+    GLUquadric* water = gluNewQuadric();
+    gluQuadricNormals(water, GLU_SMOOTH);
+    gluQuadricTexture(water, GL_TRUE);   // 텍스처 ON
+
+    // 물 벽면 (원뿔대)
+    gluCylinder(water, waterBottomRadius, waterTopRadius, waterHeight, 32, 1);
+
+    // 수면 텍스처 (위 디스크)
+    glTranslatef(0.0f, 0.0f, waterHeight);
+
+    // 수면 디스크도 텍스처 적용
+    gluDisk(water, 0.0f, waterTopRadius, 32, 1);
+
+    gluDeleteQuadric(water);
+
+    // ------- 텍스처 OFF --------
+    //glDisable(GL_TEXTURE_2D);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+}
+
+
+
 
 void drawTexturedFlake() {
     // 앞면
@@ -125,6 +193,8 @@ void InitCupNoodleTextures() {
 
     eggTextureID = loadTexture("texture/egg.png");
     if (eggTextureID == 0) cerr << "Failed to load eggTexture." << endl;
+    activewaterTextureID = loadTexture("texture/water3.bmp");
+    if (activewaterTextureID == 0) cerr << "Failed to load waterTextureID." << endl;
 }
 
 void DrawCupNoodleScene() {
@@ -183,7 +253,7 @@ void DrawCupNoodleScene() {
     gluDeleteQuadric(cup);
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
-
+    
     // 3. 면
     GLfloat mat_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     GLfloat mat_shininess[] = { 0.0f };
@@ -210,7 +280,7 @@ void DrawCupNoodleScene() {
 
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
-
+    
     glPopMatrix();
 
     // 4. 스프

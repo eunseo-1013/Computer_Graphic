@@ -5,3 +5,4 @@
 
 void InitCupNoodleTextures();
 void DrawCupNoodleScene();
+void waterCupNoodle(float gauge);

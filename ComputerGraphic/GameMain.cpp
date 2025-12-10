@@ -8,7 +8,7 @@
 #include "main.h"
 
 
-int page = 0;
+int page = 1;
 
 
 // 찐 메인 ( 게임 돌아가는 화면 )

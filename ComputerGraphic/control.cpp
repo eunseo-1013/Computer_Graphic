@@ -7,7 +7,7 @@
 #include "control.h"
 #include "Camera.h"
 #include "gauge_circle.h"
-
+#include "cup_noodle.h"
 using namespace glm;
 
 
@@ -46,9 +46,11 @@ void specialKeys(int key, int x, int y) {
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
     }
     if (kettleAngle > 40.0f && kettleAngle < 50.0f) {
-        g_value += 0.1f;
+        g_value += 0.05f;
         if (g_value >=1.0f) g_value = 1.0f;  // √÷¥Î 1.0
     }
+
+  
     glutPostRedisplay();
 }
 
