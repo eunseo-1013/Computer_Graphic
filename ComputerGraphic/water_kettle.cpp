@@ -45,6 +45,26 @@ void InitWaterKettleTextures() {
 }
 
 void DrawRealWater(float bottomRadius, float topRadius, float height, int slices, float tiltAngle, float time) {
+    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, waterTextureID);
+    glColor4f(0.4f, 0.6f, 1.0f, 0.5f);
+
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    if (tiltAngle > 10.0f) {
+        glTranslatef(time * 0.05f, time * 0.03f, 0.0f);
+    }
+    glMatrixMode(GL_MODELVIEW);
+
     float angleStep = 2.0f * M_PI / slices;
     float radTilt = tiltAngle * (M_PI / 180.0f);
     float tiltFactor = tan(radTilt) * topRadius;
@@ -107,6 +127,7 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
     glEnd();
 
     // 3. ¾Æ·§¸é (¹Ù´Ú) ¶Ñ²± ´Ý±â
+    glDisable(GL_TEXTURE_2D);
     glBegin(GL_TRIANGLE_FAN);
     glNormal3f(0.0f, 0.0f, -1.0f);
     glVertex3f(0.0f, 0.0f, 0.0f);
@@ -115,6 +136,13 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
         glVertex3f(bottomRadius * cos(angle), bottomRadius * sin(angle), 0.0f);
     }
     glEnd();
+    glEnable(GL_TEXTURE_2D);
+
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    glPopAttrib();
 }
 
 
@@ -139,30 +167,9 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glPopMatrix();
 
     // 2. ¹°
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(GL_FALSE);
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, waterTextureID);
-    //gluQuadricTexture(quad, GL_TRUE);
-
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    if (tiltAngle > 10.0f) {
-        glTranslatef(time * 0.05f, time * 0.03f, 0.0f); // Èå¸£´Â ¹°Ã³·³ º¸ÀÓ
-    }  
-    glMatrixMode(GL_MODELVIEW);
-
-    glColor4f(0.4f, 0.6f, 1.0f, 0.5f);
     glPushMatrix();
     glTranslatef(0.0f, 0.03f, 0.0f); // ¹ÞÄ§´ë À§·Î »ìÂ¦ ¶ç¿ò
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    //gluCylinder(quad, 0.18f, 0.16f, 0.6f, 32, 32); // ¹° ³ôÀÌ
-    /*glTranslatef(0, 0, 0.6f);
-    gluDisk(quad, 0.0f, 0.16f, 32, 1);
-    glTranslatef(0, 0, -0.6f);
-    gluDisk(quad, 0.0f, 0.18f, 32, 1);*/
     GLdouble eqn[4] = { 0.0, 0.0, -1.0, 0.71 };
     glClipPlane(GL_CLIP_PLANE0, eqn);
     glEnable(GL_CLIP_PLANE0);
