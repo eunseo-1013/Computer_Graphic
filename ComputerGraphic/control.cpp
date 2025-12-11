@@ -46,7 +46,7 @@ void specialKeys(int key, int x, int y) {
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
     }
     if (kettleAngle > 40.0f) {
-        g_value += 0.05f;
+        g_value += 0.03f;
         if (g_value >=1.0f) g_value = 1.0f;  // √÷¥Î 1.0
     }
 

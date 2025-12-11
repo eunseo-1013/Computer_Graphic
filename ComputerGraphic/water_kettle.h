@@ -6,6 +6,7 @@
 extern float waterTime;
 extern float kettleLift;
 extern bool kettleSelected;
+extern float kettleAngle;
 
 
 extern float waterY;     // 물이 떨어지는 y 위치
