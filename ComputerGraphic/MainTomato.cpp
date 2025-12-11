@@ -231,7 +231,7 @@ int TomatoMain(int argc, char** argv)
     glutSetCursor(GLUT_CURSOR_NONE);
 
     // 카메라 움직임 타이머
-    glutTimerFunc(16, moveCamera, 0);
+    glutTimerFunc(16, update, 0);
 
     glutMainLoop();
     return 0;

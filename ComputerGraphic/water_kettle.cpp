@@ -322,7 +322,7 @@ void UpdateWaterKettle()
 
     // 선택된 상태라면 위로
     if (keepLifting)
-        kettleLift = std::min(0.3f, kettleLift + 0.02f);
+        kettleLift = std::min(0.5f, kettleLift + 0.02f);
     else
         kettleLift = std::max(0.0f, kettleLift - 0.02f);
 }

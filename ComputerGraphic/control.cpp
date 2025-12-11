@@ -39,18 +39,12 @@ void keyboard(unsigned char key, int x, int y) {
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_LEFT && kettleSelected) {
         kettleAngle += 1.5f;
-        if (kettleAngle > 50.0f) kettleAngle = 50.0f;
+        if (kettleAngle > 70.0f) kettleAngle = 70.0f;
     }
     if (key == GLUT_KEY_RIGHT) {
         kettleAngle -= 1.5f;
         if (kettleAngle < 0.0f) kettleAngle = 0.0f;
     }
-    if (kettleAngle > 40.0f) {
-        g_value += 0.03f;
-        if (g_value >=1.0f) g_value = 1.0f;  // 최대 1.0
-    }
-
-  
     glutPostRedisplay();
 }
 
@@ -58,7 +52,22 @@ void keyboardUp(unsigned char key, int x, int y) {
     keys[key] = false;
 }
 
+void updateWater() {
+    if (kettleSelected) { // 주전자가 선택되었을 때만
+        // 각도에 따른 속도 조절
+        if (kettleAngle > 60.0f) {
+            g_value += 0.02f;
+        }
+        else if (kettleAngle > 50.0f) {
+            g_value += 0.015f;
+        }
+        else if (kettleAngle > 30.0f) {
+            g_value += 0.005f;
+        }
 
+        if (g_value >= 1.0f) g_value = 1.0f;
+    }
+}
 
 
 
@@ -165,7 +174,7 @@ void mouseMove(int x, int y) {
     cam.UpdateCamera();
 }
 
-void moveCamera(int value) {
+void moveCamera() {
     vec3 forward = vec3(0.0f, 0.0f, -1.0f);
     vec3 right = vec3(1.0f, 0.0f, 0.0f);
 
@@ -175,9 +184,13 @@ void moveCamera(int value) {
     if (keys['d']) cam.MoveCamera(right * cameraSpeed);
     if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
     if (keys['c']) cam.MoveCamera(-cam.up * cameraSpeed);
+}
 
+void update(int value) {
+    moveCamera();
+    updateWater();
     glutPostRedisplay();
-    glutTimerFunc(16, moveCamera, 0);
+    glutTimerFunc(16, update, 0);
 }
 
 

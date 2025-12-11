@@ -41,7 +41,10 @@ void mouseClick(int button, int state, int x, int y);
 
 void mouseMove(int x, int y);
 
-void moveCamera(int value);
+void moveCamera();
 
 
 void DrawCrosshair();
+
+void updateWater();
+void update(int value);

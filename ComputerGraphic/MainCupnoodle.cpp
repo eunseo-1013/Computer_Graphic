@@ -147,7 +147,7 @@ int CupNoodleMain(int argc, char** argv) {
     glutMouseFunc(mouseClick);
     glutPassiveMotionFunc(mouseMove);
     glutSetCursor(GLUT_CURSOR_NONE);
-    glutTimerFunc(16, moveCamera, 0);
+    glutTimerFunc(16, update, 0);
 
     glutMainLoop();
     return 0;
