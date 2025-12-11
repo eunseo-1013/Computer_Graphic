@@ -56,7 +56,7 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, waterTextureID);
-    glColor4f(0.4f, 0.6f, 1.0f, 0.5f);
+    glColor4f(0.4f, 0.6f, 0.8f, 0.5f);
 
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();

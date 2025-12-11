@@ -86,9 +86,8 @@ void waterCupNoodle(float gauge)
     //--------------------------------
 
     // 물 색 + 투명도
-    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-    // ? 텍스처 사용 시 보통 색을 흰색(1,1,1)으로 둬야 텍스처 색이 그대로 나옴
-
+    glColor4f(0.6f, 0.6f, 0.7f, 0.3f);
+    
     GLUquadric* water = gluNewQuadric();
     gluQuadricNormals(water, GLU_SMOOTH);
     gluQuadricTexture(water, GL_TRUE);   // 텍스처 ON
