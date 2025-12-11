@@ -57,7 +57,7 @@ void waterCupNoodle(float gauge)
     if (gauge <= 0.0f) return;
 
     if (gauge < 0.0f) gauge = 0.0f;
-    if (gauge > 1.0f) gauge = 1.0f; // 딱 그 선 까지만 물 채워지게 하고 싶어서
+    if (gauge > 1.0f) gauge = 1.0f; 
      
     const float cupHeight = 0.5f;
     const float bottomRadius = 0.3f;

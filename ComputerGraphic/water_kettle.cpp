@@ -2,7 +2,6 @@
 #include <iostream>
 #include "glaux.h"
 #include <algorithm>
-#include <algorithm>
 #include <cmath>
 
 #ifndef M_PI
@@ -12,7 +11,7 @@
 GLuint waterTextureID = -1;
 
 float waterY = 0.0f;     // 물이 떨어지는 y 위치
-bool isPouring = false;  // 기울여서 물이 나오는 상태
+bool isPouring = false;
 
 void loadTexture(void) {
 	AUX_RGBImageRec *pTextureImage = auxDIBImageLoad( "texture/water3.bmp" );
@@ -271,38 +270,15 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glutSolidCube(1.0f);
 
     glPopMatrix();
-    // ==========================
-      // 7. 기울이면 나오는 물줄기
-      // ==========================
-      // tiltAngle 기준으로 물 나오는지 여부 결정
-    if (tiltAngle > 35.0f) {          // 임계각은 적당히 조절
+    //// ==========================
+    //  // 7. 기울이면 나오는 물줄기
+    //  // ==========================
+    if (tiltAngle > 35.0f) {
         isPouring = true;
-        waterY = std::min(1.0f, waterY + 0.05f);   // 점점 길게
     }
     else {
-        waterY = std::max(0.0f, waterY - 0.08f);   // 원래대로 줄어듦
         if (waterY <= 0.0f)
             isPouring = false;
-    }
-
-    if (isPouring && waterY > 0.0f) {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(GL_FALSE);
-
-        glColor4f(0.4f, 0.6f, 1.0f, 0.8f);    // 물 색
-
-        glPushMatrix();
-        // 주둥이 위치/방향 재사용해서 그 위치에서 물 뽑아내기
-        glTranslatef(-0.1f, 0.79f, 0.0f);
-        glRotatef(-90.0f, 0.0f, 1.f, 0.0f);
-
-        float streamLen = 0.25f + 0.4f * waterY; // 길이
-        gluCylinder(quad, 0.015f, 0.01f, streamLen, 12, 1);
-        glPopMatrix();
-
-        glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);
     }
 
     glPopMatrix();   // 전체 포트 transform pop

@@ -12,7 +12,7 @@
 #include "control.h"
 #include "Tomato.h"
 #include "water_kettle.h"
-
+#include "WaterParticles.h"
 
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 

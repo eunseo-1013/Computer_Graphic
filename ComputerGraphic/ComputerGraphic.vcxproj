@@ -161,6 +161,7 @@
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="ThrowWater.cpp" />
     <ClCompile Include="Tomato_dev.cpp" />
+    <ClCompile Include="WaterParticles.cpp" />
     <ClCompile Include="water_kettle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="skybox.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Tomato.h" />
+    <ClInclude Include="WaterParticles.h" />
     <ClInclude Include="water_kettle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

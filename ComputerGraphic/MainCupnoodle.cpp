@@ -10,7 +10,7 @@
 #include "skybox.h"
 #include "control.h"
 #include "gauge_circle.h"
-
+#include "WaterParticles.h"
 
 
 void cup_object() {
@@ -78,6 +78,8 @@ void init() {
     InitWaterKettleTextures();
     // 배경
     InitSkybox();
+    // 물 파티클
+    InitWaterParticles();
 }
 
 
@@ -105,13 +107,17 @@ void display() {
     // 컵라면
     DrawCupNoodleScene();
     UpdateWaterKettle();
-  
+    
+    // 주전자
     DrawWaterKettle(0.8f, 8.851f + kettleLift, -0.2f, waterTime, kettleAngle);
-    //물: 컵이랑 같은 위치(0, 8.8, 0)로 이동 후 그리기
-    //float gauge = 0.0; // 또는 0.8f 테스트
+    
+    // 물 파티클
+    UpdateWaterParticles(kettleAngle, isPouring);
+    DrawWaterParticles(0.8f, 8.851f + kettleLift, -0.2f);
+
     glPushMatrix();
     glTranslatef(0.0f, 8.8f, 0.0f);
-    waterCupNoodle(g_value);   // ← 여기!
+    waterCupNoodle(g_value);   
     glPopMatrix();
 
 
