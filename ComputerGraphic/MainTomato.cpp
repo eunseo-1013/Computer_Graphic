@@ -32,6 +32,10 @@
 // ------------------------------
 void TomatoSceneDisplay()
 {
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHT0);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_PROJECTION);
@@ -40,6 +44,8 @@ void TomatoSceneDisplay()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    GLfloat lightPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };    // 테이블 색상 맞추려고
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     // 카메라
     gluLookAt(
         cam.eye.x, cam.eye.y, cam.eye.z,
@@ -59,14 +65,30 @@ void TomatoSceneDisplay()
     // 2) 본 씬(토마토 + 물통)
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_LIGHT0);
 
     glPushMatrix();
     glTranslatef(0.0f, 9.f, 0.0f);
     glPushMatrix(); // 0,9,0으로 이동 한것!
 
     // 조명 위치
-    GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    //GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
+    
+
+    // 테이블
+    glDisable(GL_TEXTURE_2D);
+
+    glPushMatrix();
+    glColor3f(0.5f, 0.35f, 0.05f);
+    glTranslatef(0.0f, 0.0f, 0.0f);
+    glScalef(3.0f, 0.1f, 1.5f);
+    glutSolidCube(1.0);
+    glPopMatrix();
+    glEnable(GL_TEXTURE_2D);
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.51f, -0.3f);
+    glScalef(0.5f, 0.5f, 0.5f);
 
     // --- 화분 + 흙 ---
     glPushMatrix();
@@ -110,7 +132,7 @@ void TomatoSceneDisplay()
         TomatoDisplay(current_height, current_angle, count);  // Tomato.h 쪽 함수
     }
 
-
+    glPopMatrix();
    
 
     static float t = 0.0f;
@@ -122,8 +144,11 @@ void TomatoSceneDisplay()
     vec3 pos = gKettleBasePos + glm::vec3(0.0f, kettleLift, 0.0f);
     //DrawWaterKettle(0.8f, 0.8f + kettleLift, -0.2f, waterTime, kettleAngle);
 
-    DrawWaterKettle(pos.x, pos.y, pos.z, waterTime, kettleAngle);
+    DrawWaterKettle(pos.x-0.05f, pos.y + 0.351f, pos.z, waterTime, kettleAngle);
     DrawCrosshair();
+    UpdateWaterParticles(kettleAngle, isPouring);
+    DrawWaterParticles(pos.x-0.05f, pos.y-0.02f+0.351f, pos.z, kettleAngle);
+
    
     glPopMatrix(); //0,9,0 pop -> 0,0,0 좌표로 이동
     glPopMatrix(); // 씬 전체 매트릭스
@@ -140,7 +165,7 @@ void TomatoSceneDisplay()
     glPushMatrix();
     glTranslatef(-0.31f, gaugeHeight, 0.0f);
     glScalef(0.4f, 0.4f, 0.4f);
-    drawCircularGauge(0.8f, 0.5f, 0.6f, 0.2f, g_value);
+    drawCircularGauge(0.8f, 0.3f, 0.3f, 0.1f, g_value);
     glPopMatrix();
 
     glEnable(GL_LIGHTING);
@@ -214,6 +239,7 @@ int TomatoMain(int argc, char** argv)
 
     // 물주전자 텍스처 초기화
     InitWaterKettleTextures();
+    InitWaterParticles();
 
     glClearColor(1, 1, 1, 1);
 

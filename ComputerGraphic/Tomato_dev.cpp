@@ -43,11 +43,11 @@ void SetupLighting()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
     // 화면 전체 기본 밝기
-    GLfloat globalAmbient[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+    GLfloat globalAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     // 태양 느낌의 따뜻한 흰빛
-    GLfloat lightAmbient[] = { 0.4f, 0.4f, 0.35f, 1.0f };
+    GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat lightDiffuse[] = { 1.0f, 0.98f, 0.90f, 1.0f };
     GLfloat lightSpecular[] = { 1.0f, 1.0f, 0.95f, 1.0f };
 
@@ -74,8 +74,8 @@ GLUquadric* quad = NULL;
 //------------------------------
 
 void FlowerPot(float size) {
-    
-
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glDisable(GL_TEXTURE_2D);
     // ----- 0. 조명 상태 백업 -----
     GLfloat oldAmb[4], oldDiff[4], oldSpec[4];
     glGetLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
@@ -91,17 +91,20 @@ void FlowerPot(float size) {
     glLightfv(GL_LIGHT0, GL_SPECULAR, potSpec);
 
     // ----- 2. 화분 재질 설정 (specular 0, 하이라이트 없음) -----
-    glDisable(GL_COLOR_MATERIAL);    // glColor 영향 끄고 재질로만 색 지정
+    //glDisable(GL_COLOR_MATERIAL);    // glColor 영향 끄고 재질로만 색 지정
 
-    GLfloat matAmb[] = { 0.30f, 0.18f, 0.10f, 1.0f }; // 어두운 갈색
-    GLfloat matDiff[] = { 0.50f, 0.30f, 0.16f, 1.0f }; // 본 색
-    GLfloat matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };    // 반짝임 없음
-    GLfloat matShine[] = { 1.0f };
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmb);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiff);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpec);
-    glMaterialfv(GL_FRONT, GL_SHININESS, matShine);
+    //GLfloat matAmb[] = { 0.30f, 0.18f, 0.10f, 1.0f }; // 어두운 갈색
+    //GLfloat matDiff[] = { 0.50f, 0.30f, 0.16f, 1.0f }; // 본 색
+    //GLfloat matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };    // 반짝임 없음
+    //GLfloat matShine[] = { 1.0f };
+
+    //glMaterialfv(GL_FRONT, GL_AMBIENT, matAmb);
+    //glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiff);
+    //glMaterialfv(GL_FRONT, GL_SPECULAR, matSpec);
+    //glMaterialfv(GL_FRONT, GL_SHININESS, matShine);
     GLdouble plane[] = { 0.0, 0.0, -1, 0.7 };
     glEnable(GL_CLIP_PLANE0);
     glClipPlane(GL_CLIP_PLANE0, plane);
@@ -158,6 +161,8 @@ void FlowerPot(float size) {
     glLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, oldDiff);
     glLightfv(GL_LIGHT0, GL_SPECULAR, oldSpec);
+
+    glPopAttrib();
 }
 
 void Soild() {
@@ -173,7 +178,7 @@ void Soild() {
     }
 
     // 게이지가 올라갈수록 factor가 작아져서 어두워짐
-    float factor = 1.0f - 0.7f * g_value;        // g=0 → 1.0, g=1 → 0.3
+    float factor = 1.0f - 0.5f * g_value;        // g=0 → 1.0, g=1 → 0.3
     if (factor < 0.0f) factor = 0.0f;
 
     glEnable(GL_TEXTURE_2D);
