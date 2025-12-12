@@ -159,6 +159,7 @@
     <ClCompile Include="PlantObject.cpp" />
     <ClCompile Include="plant_background.cpp" />
     <ClCompile Include="skybox.cpp" />
+    <ClCompile Include="SteamParticles.cpp" />
     <ClCompile Include="ThrowWater.cpp" />
     <ClCompile Include="Tomato_dev.cpp" />
     <ClCompile Include="WaterParticles.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="SteamParticles.h" />
     <ClInclude Include="Tomato.h" />
     <ClInclude Include="WaterParticles.h" />
     <ClInclude Include="water_kettle.h" />

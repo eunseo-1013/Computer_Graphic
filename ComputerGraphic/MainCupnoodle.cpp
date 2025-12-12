@@ -11,6 +11,7 @@
 #include "control.h"
 #include "gauge_circle.h"
 #include "WaterParticles.h"
+#include "SteamParticles.h"
 
 
 void cup_object() {
@@ -80,6 +81,8 @@ void init() {
     InitSkybox();
     // 물 파티클
     InitWaterParticles();
+    // 김 파티클
+    InitSteamParticles();
 }
 
 
@@ -120,8 +123,9 @@ void display() {
     waterCupNoodle(g_value);   
     glPopMatrix();
 
+    UpdateSteamParticles(g_value);
+    DrawSteamParticles();
 
-    //cup_object();
     DrawCrosshair();
 
     glutSwapBuffers();

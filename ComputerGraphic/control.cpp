@@ -182,8 +182,8 @@ void moveCamera() {
     if (keys['s']) cam.MoveCamera(-forward * cameraSpeed);
     if (keys['a']) cam.MoveCamera(-right * cameraSpeed);
     if (keys['d']) cam.MoveCamera(right * cameraSpeed);
-    if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
-    if (keys['c']) cam.MoveCamera(-cam.up * cameraSpeed);
+    //if (keys['e']) cam.MoveCamera(cam.up * cameraSpeed);
+    //if (keys['c']) cam.MoveCamera(-cam.up * cameraSpeed);
 }
 
 void update(int value) {
