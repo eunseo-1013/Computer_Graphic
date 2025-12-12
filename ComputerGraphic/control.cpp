@@ -56,12 +56,12 @@ void updateWater() {
     if (kettleSelected) { // 주전자가 선택되었을 때만
         // 각도에 따른 속도 조절
         if (kettleAngle > 60.0f) {
-            g_value += 0.02f;
-        }
-        else if (kettleAngle > 50.0f) {
             g_value += 0.015f;
         }
-        else if (kettleAngle > 30.0f) {
+        else if (kettleAngle > 50.0f) {
+            g_value += 0.01f;
+        }
+        else if (kettleAngle > 40.0f) {
             g_value += 0.005f;
         }
 

@@ -30,16 +30,20 @@ void RespawnDrop(int i, float tiltAngle) {
     float rad = tiltAngle * (float)(M_PI / 180.0f);
 
     // 주전자 주둥이 끝의 로컬 좌표 (주전자 모델링에 맞춰 미세 조정 필요)
-    float spoutLocalX = -0.14f;
-    float spoutLocalY = 0.553f;
+    float spoutLocalX = -0.13f;
+    float spoutLocalY = 0.563f;
+
+    float jitter = 8000.0f; // 이 값이 클수록 범위가 좁아짐
+    float randomX = ((rand() % 100) - 50) / jitter;
+    float randomY = ((rand() % 100) - 50) / jitter;
 
     // 회전 변환
-    float startX = spoutLocalX * cos(rad) - spoutLocalY * sin(rad);
-    float startY = spoutLocalX * sin(rad) + spoutLocalY * cos(rad);
+    float startX = (spoutLocalX+randomX) * cos(rad) - spoutLocalY * sin(rad);
+    float startY = (spoutLocalX+randomY) * sin(rad) + spoutLocalY * cos(rad);
 
     drops[i].x = startX;
     drops[i].y = startY;
-    drops[i].z = ((rand() % 100) - 50) / 10000.0f; // 약간의 두께감
+    drops[i].z = ((rand() % 100) - 50) / 5000.0f; // 약간의 두께감
 
     // 초기 속도 벡터 계산
     float speed = 0.05f + (float)(rand() % 10) / 500.0f;
@@ -79,20 +83,20 @@ void UpdateWaterParticles(float tiltAngle, bool isPouring) {
             drops[i].life -= drops[i].fade;
 
             // 화면 아래로 떨어지거나 수명이 다하면
-            if (drops[i].life < 0.0f || drops[i].y < -3.0f) {
+            if (drops[i].life < 0.0f || drops[i].y < -0.1f) {
                 drops[i].active = false;
             }
         }
         else if (isPouring) {
             // 물이 나오는 중이면 일정 확률로 생성
-            if ((rand() % 10) < 4) {
+            if ((rand() % 10) < 2) {
                 RespawnDrop(i, tiltAngle);
             }
         }
     }
 }
 
-void DrawWaterParticles(float kettleX, float kettleY, float kettleZ) {
+void DrawWaterParticles(float kettleX, float kettleY, float kettleZ, float tiltAngle) {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
@@ -107,25 +111,64 @@ void DrawWaterParticles(float kettleX, float kettleY, float kettleZ) {
     glPushMatrix();
     glTranslatef(kettleX, kettleY, kettleZ);
 
+    // ==========================================
+    // [핵심 기능] 주둥이 부분 클리핑 (Clip Plane)
+    // ==========================================
+
+    // 1. 현재 주둥이 끝의 위치 계산 (RespawnDrop과 동일한 공식)
+    float rad = tiltAngle * (float)(M_PI / 180.0f);
+    float spoutLocX = -0.13f;
+    float spoutLocY = 0.56f;
+
+    // 회전된 주둥이 끝 좌표 (자르는 기준점)
+    float cutX = spoutLocX * cos(rad) - spoutLocY * sin(rad);
+    float cutY = spoutLocX * sin(rad) + spoutLocY * cos(rad);
+
+    // 2. 자르는 방향 (법선 벡터, Normal)
+    // 물이 나가는 방향(rad + PI)으로 설정하면, 그 방향의 '앞쪽'만 남기고 '뒤쪽'은 자릅니다.
+    float flowDir = rad + (float)M_PI; // 물이 흐르는 방향
+    float nx = cos(flowDir);
+    float ny = sin(flowDir);
+
+    // 3. 평면 방정식 (Ax + By + Cz + D = 0)
+    // D = -(Normal . Point)
+    // 약간의 오차로 잘린 단면이 보일 수 있으므로, 기준점을 아주 살짝(-0.02f) 뒤로 밀어서 자연스럽게 처리
+    float offset = 0.005f;
+    double planeEq[] = { nx, ny, 0.0, -(nx * cutX + ny * cutY) + offset };
+
+    // 4. 클립 플레인 활성화
+    glClipPlane(GL_CLIP_PLANE0, planeEq);
+    glEnable(GL_CLIP_PLANE0);
+
     for (int i = 0; i < MAX_DROPS; i++) {
         if (drops[i].active) {
-            float alpha = 0.05f;
+            float alpha = 0.3f;
             glColor4f(drops[i].r, drops[i].g, drops[i].b, drops[i].life*alpha);
 
             float x = drops[i].x;
             float y = drops[i].y;
             float z = drops[i].z;
-            float scale = 0.007f;
+            
+            float scale = 0.0001f;
+
+            // [핵심 변경] 속도에 따른 스트레치 (Motion Blur)
+            // 물방울이 떨어지는 속도 벡터(vx, vy)를 이용해 꼬리를 그립니다.
+            float tailFactor = 2.0f; // 꼬리 길이 계수 (클수록 길어짐)
+            float tailX = x - drops[i].vx * tailFactor;
+            float tailY = y - drops[i].vy * tailFactor;
 
             // 간단한 빌보드 (항상 카메라를 봐야 하지만 여기선 Z축 평면으로 그림)
             glBegin(GL_TRIANGLE_STRIP);
-            glTexCoord2f(1, 1); glVertex3f(x + scale, y + scale, z);
-            glTexCoord2f(0, 1); glVertex3f(x - scale, y + scale, z);
-            glTexCoord2f(1, 0); glVertex3f(x + scale, y - scale, z);
-            glTexCoord2f(0, 0); glVertex3f(x - scale, y - scale, z);
+            glTexCoord2f(1, 1); glVertex3f(x + scale, y+scale, z);
+            glTexCoord2f(0, 1); glVertex3f(x - scale, y+scale, z);
+            /*glTexCoord2f(1, 0); glVertex3f(x + scale, y - scale, z);
+            glTexCoord2f(0, 0); glVertex3f(x - scale, y - scale, z);*/
+            glTexCoord2f(1, 0); glVertex3f(tailX + scale, tailY, z);
+            glTexCoord2f(0, 0); glVertex3f(tailX - scale, tailY, z);
             glEnd();
         }
     }
+    glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 
     glDepthMask(GL_TRUE);

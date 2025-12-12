@@ -16,4 +16,4 @@ struct WaterParticle {
 
 void InitWaterParticles();
 void UpdateWaterParticles(float tiltAngle, bool isPouring);
-void DrawWaterParticles(float kettleX, float kettleY, float kettleZ);
+void DrawWaterParticles(float kettleX, float kettleY, float kettleZ, float kettleAngle);

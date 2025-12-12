@@ -273,7 +273,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     //// ==========================
     //  // 7. 기울이면 나오는 물줄기
     //  // ==========================
-    if (tiltAngle > 35.0f) {
+    if (tiltAngle > 40.0f) {
         isPouring = true;
     }
     else {

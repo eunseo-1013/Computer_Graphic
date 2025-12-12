@@ -113,7 +113,7 @@ void display() {
     
     // 물 파티클
     UpdateWaterParticles(kettleAngle, isPouring);
-    DrawWaterParticles(0.8f, 8.851f + kettleLift, -0.2f);
+    DrawWaterParticles(0.8f, 8.83f + kettleLift, -0.2f, kettleAngle);
 
     glPushMatrix();
     glTranslatef(0.0f, 8.8f, 0.0f);
