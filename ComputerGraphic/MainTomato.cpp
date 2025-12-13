@@ -202,7 +202,10 @@ void TomatoSceneDisplay()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    DrawNoiseOverlay(0.7f, num);
+    if (pov >= 3) {
+        DrawNoiseOverlay(0.7f, num);
+    }
+   
    
     glutSwapBuffers();
     

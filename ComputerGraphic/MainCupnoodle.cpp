@@ -131,7 +131,10 @@ void display() {
     DrawSteamParticles();
 
     DrawCrosshair();
-    DrawNoiseOverlay(0.7f, pov-3); // t시각장애인용
+    if (pov >= 3) {
+        DrawNoiseOverlay(0.7f, pov - 3); // t시각장애인용
+    }
+   
     glutSwapBuffers();
 }
 

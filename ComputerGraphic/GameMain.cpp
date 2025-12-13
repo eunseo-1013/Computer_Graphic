@@ -7,9 +7,11 @@
 #include <GL/glu.h>
 #include "main.h"
 #include "Camera.h"
-int page = 1; // 0 = 토마토 //1 = 라면
 
-int pov = 5;
+
+int page = 0; // 0 = 토마토 //1 = 라면
+
+int pov = 0;
 // 0 = 사람 1 = 잠자리 2 = 강아지 3 = 시각장애인1, 4 =시각장애인2, 5=시각장애인3
 
 extern camera cam;
