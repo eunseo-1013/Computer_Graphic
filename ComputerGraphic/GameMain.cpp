@@ -8,7 +8,9 @@
 #include "main.h"
 #include "Camera.h"
 
-int pov = 4;
+int page = 0; // 0 = 토마토 //1 = 라면
+
+int pov = 3;
 // 0 = 사람 1 = 잠자리 2 = 사자 3 = 시각장애인1(중앙만 보임), 4 =시각장애인2(흐림), 5=시각장애인3(중앙만 안보임)
 
 extern camera cam;

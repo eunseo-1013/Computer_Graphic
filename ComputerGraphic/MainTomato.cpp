@@ -202,11 +202,8 @@ void TomatoSceneDisplay()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    if (pov == 3) {
+    if (pov >= 3) {
         DrawNoiseOverlay(0.95f, pov - 3); // t시각장애인용
-    }
-    else if (pov > 3) {
-        DrawNoiseOverlay(0.7f, pov - 3);
     }
     
    
