@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="control.cpp" />
     <ClCompile Include="cupObject.cpp" />
+    <ClCompile Include="eye.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="gauge_circle.cpp" />
     <ClCompile Include="hand.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="control.h" />
     <ClInclude Include="cup_noodle.h" />
+    <ClInclude Include="eye.h" />
     <ClInclude Include="gauge_circle.h" />
     <ClInclude Include="loadTexture.h" />
     <ClInclude Include="main.h" />

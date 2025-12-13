@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "cup_noodle.h"
+#include "eye.h"
 #include <iostream>
 #include <vector>
 
@@ -195,6 +196,8 @@ void InitCupNoodleTextures() {
     if (eggTextureID == 0) cerr << "Failed to load eggTexture." << endl;
     activewaterTextureID = loadTexture("texture/water3.bmp");
     if (activewaterTextureID == 0) cerr << "Failed to load waterTextureID." << endl;
+
+  
 }
 
 void DrawCupNoodleScene() {

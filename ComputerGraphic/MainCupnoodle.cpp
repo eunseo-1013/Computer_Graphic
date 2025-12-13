@@ -12,6 +12,9 @@
 #include "gauge_circle.h"
 #include "WaterParticles.h"
 #include "SteamParticles.h"
+#include "main.h"
+#include "eye.h"
+
 
 void cup_object() {
     GLUquadric* quad = gluNewQuadric();
@@ -82,6 +85,8 @@ void init() {
     InitWaterParticles();
     // 김 파티클
     InitSteamParticles();
+    // 토마토용 텍스쳐 ( 시각장애인 여기 있어서 로드 넣음 )
+    InitTextures();
 }
 
 
@@ -126,7 +131,7 @@ void display() {
     DrawSteamParticles();
 
     DrawCrosshair();
-
+    DrawNoiseOverlay(0.7f, pov-3); // t시각장애인용
     glutSwapBuffers();
 }
 

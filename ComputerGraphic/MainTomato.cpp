@@ -13,6 +13,8 @@
 #include "Tomato.h"
 #include "water_kettle.h"
 #include "WaterParticles.h"
+#include "eye.h"
+#include "main.h"
 
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 
@@ -24,7 +26,7 @@
 /// 4 ? -> 5,2
 
 // 마우스 회전 관련
-
+int num = pov-3;
 
 
 // ------------------------------
@@ -200,8 +202,11 @@ void TomatoSceneDisplay()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+    DrawNoiseOverlay(0.7f, num);
    
     glutSwapBuffers();
+    
+
 }
 
 // ------------------------------
@@ -222,11 +227,15 @@ void MyReshape(int w, int h)
 // ------------------------------
 bool InitTextures()
 {
+
+    gNoiseTex0 = gLoadTexture("texture/Particle.bmp");
+    gNoiseTex1 = gLoadTexture("texture/noise.bmp");
+    gNoiseTex2 = gLoadTexture("texture/noise2.bmp");
     gLeafTex = gLoadTexture("texture/24leaf_texture.bmp");
     gSoilTex = gLoadTexture("texture/soild_texture.bmp");
     gStemTex = gLoadTexture("texture/stem_texture.bmp");
 
-    if (!gLeafTex || !gSoilTex || !gStemTex) {
+    if (!gLeafTex || !gSoilTex || !gStemTex ) {
         printf("텍스처 로드 실패\n");
         return false;
     }

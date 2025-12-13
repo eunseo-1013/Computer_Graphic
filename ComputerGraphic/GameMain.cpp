@@ -6,26 +6,27 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "main.h"
-
 #include "Camera.h"
-int page = 1;
+int page = 1; // 0 = 토마토 //1 = 라면
 
-
-int animal = 2;
-// 0 = 사람 1 = 잠자리 2 = 강아지
+int pov = 5;
+// 0 = 사람 1 = 잠자리 2 = 강아지 3 = 시각장애인1, 4 =시각장애인2, 5=시각장애인3
 
 extern camera cam;
 
 // 찐 메인 ( 게임 돌아가는 화면 )
 int main(int argc, char** argv) {
-	if (animal == 0) {
+	if (pov == 0) {
 		cam.fov = 60.0;
 	}
-	else if (animal == 1) {
+	else if (pov == 1) {
 		cam.fov = 160.0;
 	}
-	else if (animal == 2) {
+	else if (pov == 2) {
 		cam.fov = 90;
+	}
+	else {
+		cam.fov = 60.0; // 시각장애인
 	}
 	if (page == 0) {
 		TomatoMain(argc, argv);
