@@ -8,10 +8,10 @@
 #include "main.h"
 
 #include "Camera.h"
-int page = 1;
+int page = 0;
 
 
-int animal = 1;
+int animal = 2;
 // 0 = 사람 1 = 잠자리 2 = 강아지
 
 extern camera cam;

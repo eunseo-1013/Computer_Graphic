@@ -80,14 +80,13 @@ void TomatoSceneDisplay()
 
     glPushMatrix();
     glColor3f(0.5f, 0.35f, 0.05f);
-    glTranslatef(0.0f, 0.0f, 0.0f);
     glScalef(3.0f, 0.1f, 1.5f);
     glutSolidCube(1.0);
     glPopMatrix();
     glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
-    glTranslatef(0.0f, 0.51f, -0.3f);
+    glTranslatef(0.0f, 0.51f, -0.3f); // 화분 옮기기 ( 위로 )
     glScalef(0.5f, 0.5f, 0.5f);
 
     // --- 화분 + 흙 ---
@@ -163,7 +162,7 @@ void TomatoSceneDisplay()
     glDisable(GL_DEPTH_TEST);
 
     glPushMatrix();
-    glTranslatef(-0.31f, gaugeHeight, 0.0f);
+    glTranslatef(-0.31f, gaugeHeight, -0.3f);
     glScalef(0.4f, 0.4f, 0.4f);
     drawCircularGauge(0.8f, 0.3f, 0.3f, 0.1f, g_value);
     glPopMatrix();

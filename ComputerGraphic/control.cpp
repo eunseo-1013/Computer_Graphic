@@ -71,7 +71,6 @@ void updateWater() {
 
 
 
-// 물병 위치 하드코딩 수정 필요!!
 bool IsKettleInCrosshair() {
     vec3 rayOrigin = cam.eye;
     vec3 rayDir = normalize(cam.at - cam.eye);
@@ -88,7 +87,7 @@ bool IsKettleInCrosshair() {
     vec3 closestPoint = rayOrigin + proj * rayDir;
     float dist = length(kettlePos - closestPoint);
 
-    return (dist < 0.3f); // 허용 오차 (물병 반지름)
+    return (dist < 0.6f); // 허용 오차 (물병 반지름)
 }
 
 
