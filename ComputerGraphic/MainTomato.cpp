@@ -40,7 +40,7 @@ void TomatoSceneDisplay()
     glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    gluPerspective(cam.fov, (float)windowWidth / (float)windowHeight, 0.1f, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
