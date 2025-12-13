@@ -52,6 +52,7 @@ void DrawNoiseOverlay(float alpha,int num)
     else if (num == 2) {
         glBindTexture(GL_TEXTURE_2D, gNoiseTex2);
     }
+   
     
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
