@@ -145,7 +145,67 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
 }
 
 
+
+
+void DrawBlobShadowXZ(float x, float y, float z, float rx, float rz, float alpha)
+{
+    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_TEXTURE_2D);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // 바닥과 z-fighting 방지
+    glDepthMask(GL_FALSE);
+
+    glPushMatrix();
+    glTranslatef(x, y + 0.002f, z);
+
+    const int seg = 48;
+    glBegin(GL_TRIANGLE_FAN);
+    glColor4f(0.0f, 0.0f, 0.0f, alpha);
+    glVertex3f(0, 0, 0);
+
+    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
+    for (int i = 0; i <= seg; ++i) {
+        float a = (float)i / (float)seg * 2.0f * 3.1415926f;
+        glVertex3f(cosf(a) * rx, 0.0f, sinf(a) * rz);
+    }
+    glEnd();
+
+    glPopMatrix();
+
+    glDepthMask(GL_TRUE);
+    glPopAttrib();
+}
+
+
 void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
+
+
+    
+
+    float groundY = y - kettleLift; // 네 바닥 기준에 맞게 조절
+
+    float lift01 = std::min(1.0f, std::max(0.0f, kettleLift / 0.5f));
+
+    float maxAlpha = 0.35f;
+    float minAlpha = 0.08f;   
+    float alpha = minAlpha + (maxAlpha - minAlpha) * (1.0f - lift01);
+
+    float rxMax = 0.22f, rzMax = 0.18f;
+    float rxMin = 0.22f, rzMin = 0.12f;  // ★ 떠있어도 남는 크기
+    float rx = rxMin + (rxMax - rxMin) * (1.0f - lift01);
+    float rz = rzMin + (rzMax - rzMin) * (1.0f - lift01);
+
+  
+    //float groundY = 9.0f + 0.8f;
+    DrawBlobShadowXZ(x, groundY, z, rx, rz, alpha);
+
+
     glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
 	glPushMatrix();
 	glTranslatef(x, y, z);
@@ -302,3 +362,4 @@ void UpdateWaterKettle()
     else
         kettleLift = std::max(0.0f, kettleLift - 0.02f);
 }
+

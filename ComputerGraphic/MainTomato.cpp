@@ -75,14 +75,45 @@ void TomatoSceneDisplay()
     //GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
     
 
-    // 테이블
+    // --------------------
+// 테이블 상판
+// --------------------
     glDisable(GL_TEXTURE_2D);
 
     glPushMatrix();
-    glColor3f(0.5f, 0.35f, 0.05f);
-    glScalef(3.0f, 0.1f, 1.5f);
+    glColor3f(0.5f, 0.35f, 0.05f);   // 나무색
+    glScalef(3.0f, 0.1f, 1.5f);      // 상판 크기
     glutSolidCube(1.0);
     glPopMatrix();
+
+    // --------------------
+    // 테이블 다리
+    // --------------------
+    glColor3f(0.45f, 0.30f, 0.08f);  // 다리 조금 더 진하게
+
+    float legHeight = 1.2f;
+    float legThickness = 0.15f;
+
+    // 다리 위치 (상판 기준 네 귀퉁이)
+    float xOffset = 1.4f;
+    float zOffset = 0.65f;
+
+    for (int x = -1; x <= 1; x += 2)
+    {
+        for (int z = -1; z <= 1; z += 2)
+        {
+            glPushMatrix();
+            glTranslatef(
+                x * xOffset,
+                -legHeight * 0.5f - 0.05f,   // 상판 아래로
+                z * zOffset
+            );
+            glScalef(legThickness, legHeight, legThickness);
+            glutSolidCube(1.0);
+            glPopMatrix();
+        }
+    }
+
     glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();

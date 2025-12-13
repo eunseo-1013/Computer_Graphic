@@ -8,7 +8,7 @@
 #include "main.h"
 
 #include "Camera.h"
-int page = 0;
+int page = 1;
 
 
 int animal = 2;

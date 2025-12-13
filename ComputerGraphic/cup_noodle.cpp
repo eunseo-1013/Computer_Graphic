@@ -85,8 +85,8 @@ void waterCupNoodle(float gauge)
     glBindTexture(GL_TEXTURE_2D, activewaterTextureID);  // 이미 로드된 텍스처 ID 사용
     //--------------------------------
 
-    // 물 색 + 투명도
-    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+    // 물 색 + 투명도 ( 반투명 빨강)
+    glColor4f(1.0f, 0.35f, 0.1f, 0.5f);
     //  텍스처 사용 시 보통 색을 흰색(1,1,1)으로 둬야 텍스처 색이 그대로 나옴
 
     GLUquadric* water = gluNewQuadric();
@@ -206,12 +206,46 @@ void DrawCupNoodleScene() {
     glTranslatef(0.0f, 8.8f, 0.0f);
 
     // 1. 테이블
+   // --------------------
+// 테이블 상판
+// --------------------
+    glDisable(GL_TEXTURE_2D);
+
     glPushMatrix();
-    glColor3f(0.5f, 0.35f, 0.05f);
-    glTranslatef(0.0f, 0.0f, 0.0f);
-    glScalef(3.0f, 0.1f, 1.5f);
+    glColor3f(0.5f, 0.35f, 0.05f);   // 나무색
+    glScalef(3.0f, 0.1f, 1.5f);      // 상판 크기
     glutSolidCube(1.0);
     glPopMatrix();
+
+    // --------------------
+    // 테이블 다리
+    // --------------------
+    glColor3f(0.45f, 0.30f, 0.08f);  // 다리 조금 더 진하게
+
+    float legHeight = 1.2f;
+    float legThickness = 0.15f;
+
+    // 다리 위치 (상판 기준 네 귀퉁이)
+    float xOffset = 1.4f;
+    float zOffset = 0.65f;
+
+    for (int x = -1; x <= 1; x += 2)
+    {
+        for (int z = -1; z <= 1; z += 2)
+        {
+            glPushMatrix();
+            glTranslatef(
+                x * xOffset,
+                -legHeight * 0.5f - 0.05f,   // 상판 아래로
+                z * zOffset
+            );
+            glScalef(legThickness, legHeight, legThickness);
+            glutSolidCube(1.0);
+            glPopMatrix();
+        }
+    }
+
+    glEnable(GL_TEXTURE_2D);
 
     // 2. 컵
     glPushMatrix();
