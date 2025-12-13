@@ -19,13 +19,14 @@ public:
     vec3 forward; //vector pointing forward direction
     float distance = 1; //distance from eye to at
     vec3 right; //vector indicating right direction from the point of camera
-    
+    float fov;
     void InitCamera(vec3 _center, vec3 _at, vec3 _up)
     {
         //set three variables and update others
         eye = _center;
         at = _at;
         up = _up;
+     
         UpdateCamera();
     }
 
@@ -58,4 +59,5 @@ public:
         forward = normalize(at - eye);
         right = normalize(cross(forward, up));
     }
+   
 };

@@ -12,7 +12,6 @@
 #include "gauge_circle.h"
 
 
-
 void cup_object() {
     GLUquadric* quad = gluNewQuadric();
     gluQuadricNormals(quad, GLU_SMOOTH);
@@ -87,7 +86,7 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    gluPerspective(cam.fov, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -125,6 +124,8 @@ void reshape(int w, int h) {
     windowWidth = w;
     windowHeight = h;
     glViewport(0, 0, w, h);
+
+
 }
 
 

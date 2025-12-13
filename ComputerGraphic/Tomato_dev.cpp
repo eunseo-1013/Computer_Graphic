@@ -12,6 +12,8 @@
 #include "Camera.h"
 #include "control.h"
 #include "water_kettle.h"
+
+
 /// 1 loadtexture 합치기  o
 /// 2. main 에 페이지 번호 추가하기 
 /// 3. 게이지  바 추가하기 o

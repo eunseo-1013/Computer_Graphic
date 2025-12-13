@@ -36,7 +36,7 @@ void TomatoSceneDisplay()
     glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0f, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+    gluPerspective(cam.fov, (float)windowWidth / (float)windowHeight, 0.1f, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -67,7 +67,7 @@ void TomatoSceneDisplay()
     // 조명 위치
     GLfloat lightPos[] = { 1.5f, 3.0f, 2.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
+    glDisable(GL_TEXTURE_2D);
     // --- 화분 + 흙 ---
     glPushMatrix();
     glTranslatef(0.0f, -0.2f, 0.0f);
