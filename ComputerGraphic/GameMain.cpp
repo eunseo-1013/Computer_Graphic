@@ -9,8 +9,8 @@
 #include "Camera.h"
 int page = 1; // 0 = 토마토 //1 = 라면
 
-int pov = 5;
-// 0 = 사람 1 = 잠자리 2 = 강아지 3 = 시각장애인1, 4 =시각장애인2, 5=시각장애인3
+int pov = 4;
+// 0 = 사람 1 = 잠자리 2 = 사자 3 = 시각장애인1(중앙만 보임), 4 =시각장애인2(흐림), 5=시각장애인3(중앙만 안보임)
 
 extern camera cam;
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 		cam.fov = 160.0;
 	}
 	else if (pov == 2) {
-		cam.fov = 90;
+		cam.fov = 30;
 	}
 	else {
 		cam.fov = 60.0; // 시각장애인

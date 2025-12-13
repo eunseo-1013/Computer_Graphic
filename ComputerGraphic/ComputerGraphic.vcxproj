@@ -83,12 +83,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)\..\sources\;%(AdditionalIncludeDirectories);C:\Users\eunse\source\repos\ComputerGraphic</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)\..\sources\;%(AdditionalIncludeDirectories);C:\Users\sh040\Desktop\computer_graphics\ComputerGraphic\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)\..\runtimes\win-$(PlatformTarget)\native\$(Configuration)\;%(AdditionalLibraryDirectories);C:\Users\eunse\source\repos\ComputerGraphic</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)\..\runtimes\win-$(PlatformTarget)\native\$(Configuration)\;%(AdditionalLibraryDirectories);C:\Users\sh040\Desktop\computer_graphics\ComputerGraphic\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);legacy_stdio_definitions.lib;glaux.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

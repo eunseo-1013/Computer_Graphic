@@ -15,8 +15,9 @@ void SetupFog()
     GLfloat fogColor[] = { 0.9f, 0.9f, 0.9f, 1.0f }; // 뿌연 흰색
     glFogfv(GL_FOG_COLOR, fogColor);
 
-    glFogi(GL_FOG_MODE, GL_LINEAR);  // 선형 안개 (제일 자연스러움)
+    glFogi(GL_FOG_MODE, GL_EXP2);  // 선형 안개 (제일 자연스러움)
 
+    glFogf(GL_FOG_DENSITY, 0.5f);
     glFogf(GL_FOG_START, 1.0f);      // 이 거리부터 뿌옇게
     glFogf(GL_FOG_END, 6.0f);        // 이 거리에서 거의 안 보임
 }
