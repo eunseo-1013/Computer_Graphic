@@ -9,7 +9,7 @@
 static SteamParticle steam[MAX_STEAM];
 static GLuint steamTextureID = 0;
 
-// 텍스처 로드 (기존 water3.bmp 재사용)
+// 텍스처 로드 
 void LoadSteamTexture() {
     AUX_RGBImageRec* pTextureImage = auxDIBImageLoad("texture/steam.bmp");
     if (pTextureImage != NULL) {
@@ -41,14 +41,14 @@ void RespawnSteam(int i, float gauge) {
     steam[i].x = cos(angle) * radius;
     steam[i].z = sin(angle) * radius - 0.15f;
 
-    // 높이: 컵 바닥(8.8) + 물 높이(최대 0.5) * 게이지
-    // 약간 수면보다 위에서 시작하게 (+0.05)
+  
+    // 약간 수면보다 위에서 시작하게끔 조정
     float waterBaseY = 8.8f + 0.25f; // 컵 바닥 기준점
     steam[i].y = waterBaseY + (0.5f * gauge);
     
-    // 위로 올라가는 속도 (천천히)
+    // 천천히 올라오게끔 조정!
     steam[i].vy = 0.001f + (float)(rand() % 10) / 3000.0f;
-    steam[i].vx = ((rand() % 100) - 50) / 20000.0f; // 좌우로 살짝 흔들림
+    steam[i].vx = ((rand() % 100) - 50) / 20000.0f; 
     steam[i].vz = ((rand() % 100) - 50) / 20000.0f;
 
     steam[i].life = 1.0f;
@@ -71,10 +71,9 @@ void UpdateSteamParticles(float gauge) {
             steam[i].y += steam[i].vy;
             steam[i].z += steam[i].vz;
 
-            // 점점 커짐 (확산)
+            // 확산
             steam[i].size += 0.00015f;
-
-            // 수명 감소 (점점 사라짐)
+            
             steam[i].life -= 0.006f;
 
             if (steam[i].life < 0.0f) {
@@ -84,7 +83,7 @@ void UpdateSteamParticles(float gauge) {
             }
         }
         else {
-            // 비활성 상태면 랜덤하게 생성 시도 (물이 있을 때만)
+            // 비활성 상태면 랜덤하게 생성
             if (gauge > 0.05f && (rand() % 50) < 2) {
                 RespawnSteam(i, gauge);
             }
@@ -94,20 +93,19 @@ void UpdateSteamParticles(float gauge) {
 
 void DrawSteamParticles() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glDisable(GL_LIGHTING); // 김은 자체 색상
+    glDisable(GL_LIGHTING); 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE); // 겹칠수록 하얗게 빛나도록 (Add blending)
-    glDepthMask(GL_FALSE); // 투명한 김은 깊이 버퍼 끄기
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE); // 겹칠수록 하얗게 빛나야 진짜 같음
+    glDepthMask(GL_FALSE); // 투명함을 위함~
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, steamTextureID);
 
-    // 김은 컵라면 위치 근처에서 그려지므로 별도 Translate 없이 월드 좌표 사용
-    // (이미 Respawn에서 8.8f 높이를 적용했음)
+    
 
     for (int i = 0; i < MAX_STEAM; i++) {
         if (steam[i].active) {
-            // 흰색, 투명도는 수명에 비례 (아주 연하게: max 0.15)
+            // 투명도는 수명에 비례  !!!!!!!!!!!
             glColor4f(0.8f, 0.8f, 0.8f, steam[i].life * 0.15f);
 
             float x = steam[i].x;
@@ -115,8 +113,8 @@ void DrawSteamParticles() {
             float z = steam[i].z;
             float s = steam[i].size;
 
-            // 빌보드 (항상 카메라를 봐야 하지만, 여기선 간단히 십자 모양으로 처리)
-            // 1. 정면
+            
+            // 정면
             glBegin(GL_TRIANGLE_STRIP);
             glTexCoord2f(1, 1); glVertex3f(x + s, y + s, z);
             glTexCoord2f(0, 1); glVertex3f(x - s, y + s, z);
@@ -124,7 +122,7 @@ void DrawSteamParticles() {
             glTexCoord2f(0, 0); glVertex3f(x - s, y - s, z);
             glEnd();
 
-            // 2. 측면 (입체감)
+            //측면
             glBegin(GL_TRIANGLE_STRIP);
             glTexCoord2f(1, 1); glVertex3f(x, y + s, z + s);
             glTexCoord2f(0, 1); glVertex3f(x, y + s, z - s);

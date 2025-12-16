@@ -13,18 +13,13 @@ using namespace std;
 int windowWidth = 1280;
 int windowHeight = 720;
 
-// 마우스 회전 관련 전역 변수
 float angleX = 0.0f;
 float angleY = 0.0f;
 int   prevX, prevY;
 bool  isDragging = false;
 
-// GLU Quadric (필요시 전역 사용 가능)
 GLUquadric* quad = NULL;
 
-// --------------------------
-// 조명 및 유리 재질 초기화
-// --------------------------
 void initLighting() {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -44,9 +39,9 @@ void initLighting() {
 
    // 유리 재질 설정
     GLfloat matAmbient[] = { 0.1f, 0.1f, 0.1f, 0.3f };
-    GLfloat matDiffuse[] = { 0.7f, 0.9f, 1.0f, 0.6f }; // 살짝 푸른빛
+    GLfloat matDiffuse[] = { 0.7f, 0.9f, 1.0f, 0.6f }; // 푸른빛
     GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 0.3f };
-    GLfloat matShininess[] = { 100.0f };             // 반짝임 강함
+    GLfloat matShininess[] = { 100.0f };             // 반짝임 추가
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
@@ -61,9 +56,8 @@ void cup_object() {
     glPushMatrix();
     glRotatef(-90, 1, 0, 0); // 컵을 위로 세우기
 
-    // --------------------------
-    // 파라미터들
-    // --------------------------
+
+
     float outerBottom = 0.5f;
     float outerTop = 0.8f;
     float height = 2.0f;
@@ -74,56 +68,38 @@ void cup_object() {
 
     int slices = 40;
 
-    // --------------------------
-    // 투명 유리 효과
-    // --------------------------
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
 
-    // --------------------------
-    // 1) 컵 외벽
-    // --------------------------
+
     gluCylinder(quad, outerBottom, outerTop, height, slices, slices);
 
-    // 1-1) 컵 외부 바닥 (바깥쪽 면)
     gluDisk(quad, 0.0f, outerBottom, slices, 1);
 
-    // --------------------------
-    // 2) 컵 내부 벽 (두께 표현)
-    //    안쪽을 향하도록 뒤집어서 그림
-    // --------------------------
+  
     glPushMatrix();
     glTranslatef(0, 0, height);
     glRotatef(180, 1, 0, 0); // 위에서 아래로 뒤집기
     gluCylinder(quad, innerTop, innerBottom, height-0.2, slices, slices);
     glPopMatrix();
 
-    // --------------------------
-    // 3) 윗 테두리(컵 입구) 링
-    //    innerTop ~ outerTop 사이를 막아줌
-    // --------------------------
     glPushMatrix();
     glTranslatef(0, 0, height); // 컵 윗부분 z = height 위치
     gluDisk(quad, innerTop, outerTop, slices, 1);
     glPopMatrix();
 
-    // --------------------------
-    // 4) 바닥 두께 링 (outerBottom ~ innerBottom)
-    // --------------------------
+  
     gluDisk(quad, innerBottom, outerBottom, slices, 1);
 
-    // --------------------------
-    // 5) 컵 안쪽 바닥 (사용자가 보는 내부 바닥)
-    // --------------------------
+ 
     glPushMatrix();
     glTranslatef(0, 0, 0.01f); // Z-fighting 방지용 약간 올림
     gluDisk(quad, 0.0f, innerBottom, slices, 1);
     glPopMatrix();
 
-    // --------------------------
-    // 마무리
-    // --------------------------
+   
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
 
@@ -133,9 +109,6 @@ void cup_object() {
 
 
 
-// --------------------------
-// 디스플레이 콜백 (실제 사용)
-// --------------------------
 void MyDisplay() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -156,8 +129,6 @@ void MyDisplay() {
 
     glutSwapBuffers();
 }
-
-/*  필요하면 예전 버전 디스플레이를 참고용으로 이렇게 보관해도 됨
 
 void MyDisplay_Old(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -185,9 +156,7 @@ void MyDisplay_Old(){
 
 
 /*
-// --------------------------
-// 리쉐이프 콜백
-// --------------------------
+
 void MyReshape(int w, int h) {
     windowWidth = w;
     windowHeight = h;
@@ -202,9 +171,7 @@ void MyReshape(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-// --------------------------
-// 마우스 콜백 (드래그로 회전)
-// --------------------------
+
 void Mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
@@ -239,18 +206,14 @@ void Motion(int x, int y) {
     }
 }
 
-// --------------------------
-// 키보드 콜백
-// --------------------------
+
 void keyboard(unsigned char key, int x, int y) {
     if (key == 27) { // ESC
         glutLeaveMainLoop();
     }
 }
 
-// --------------------------
-// 메인
-// --------------------------
+
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

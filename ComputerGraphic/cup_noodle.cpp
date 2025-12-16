@@ -81,18 +81,18 @@ void waterCupNoodle(float gauge)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // -------텍스처 활성화 --------
+    //텍스처 활성화 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, activewaterTextureID);  // 이미 로드된 텍스처 ID 사용
-    //--------------------------------
+   
 
     // 물 색 + 투명도 ( 반투명 빨강)
     glColor4f(1.0f, 0.35f, 0.1f, 0.5f);
-    //  텍스처 사용 시 보통 색을 흰색(1,1,1)으로 둬야 텍스처 색이 그대로 나옴
+    
 
     GLUquadric* water = gluNewQuadric();
     gluQuadricNormals(water, GLU_SMOOTH);
-    gluQuadricTexture(water, GL_TRUE);   // 텍스처 ON
+    gluQuadricTexture(water, GL_TRUE);  
 
     // 물 벽면 (원뿔대)
     gluCylinder(water, waterBottomRadius, waterTopRadius, waterHeight, 32, 1);
@@ -104,9 +104,6 @@ void waterCupNoodle(float gauge)
     gluDisk(water, 0.0f, waterTopRadius, 32, 1);
 
     gluDeleteQuadric(water);
-
-    // ------- 텍스처 OFF --------
-    //glDisable(GL_TEXTURE_2D);
 
     glDisable(GL_BLEND);
     glEnable(GL_LIGHTING);
@@ -208,10 +205,8 @@ void DrawCupNoodleScene() {
     glPushMatrix();
     glTranslatef(0.0f, 8.8f, 0.0f);
 
-    // 1. 테이블
-   // --------------------
-// 테이블 상판
-// --------------------
+    //테이블
+
     glDisable(GL_TEXTURE_2D);
 
     glPushMatrix();
@@ -220,15 +215,14 @@ void DrawCupNoodleScene() {
     glutSolidCube(1.0);
     glPopMatrix();
 
-    // --------------------
     // 테이블 다리
-    // --------------------
+  
     glColor3f(0.45f, 0.30f, 0.08f);  // 다리 조금 더 진하게
 
     float legHeight = 1.2f;
     float legThickness = 0.15f;
 
-    // 다리 위치 (상판 기준 네 귀퉁이)
+    // 다리 위치 
     float xOffset = 1.4f;
     float zOffset = 0.65f;
 
@@ -250,7 +244,7 @@ void DrawCupNoodleScene() {
 
     glEnable(GL_TEXTURE_2D);
 
-    // 2. 컵
+    // 컵
     glPushMatrix();
     glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -291,7 +285,7 @@ void DrawCupNoodleScene() {
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
     
-    // 3. 면
+    // 면
     GLfloat mat_specular[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     GLfloat mat_shininess[] = { 0.0f };
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -320,7 +314,7 @@ void DrawCupNoodleScene() {
     
     glPopMatrix();
 
-    // 4. 스프
+    // 스프
     glPushMatrix();
     glRotatef(-90.f, 1, 0, 0);
     glTranslatef(0.0f, 0.0f, 8.8f);
@@ -390,4 +384,4 @@ void DrawCupNoodleScene() {
     glPopMatrix();
     //glPopMatrix();
     glPopAttrib();
-}
+}ㅁ

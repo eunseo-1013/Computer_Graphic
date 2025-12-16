@@ -23,14 +23,12 @@ void cup_object() {
     glPushMatrix();
     glRotatef(-90, 1, 0, 0);
 
-    // --------------------------
-    // 투명 유리 효과
-    // --------------------------
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
 
-    // 컵 외벽 (잘린 원뿔)
+ 
     gluCylinder(quad, 0.5, 0.8, 2.0, 30, 30);
 
     // 컵 바닥
@@ -75,9 +73,9 @@ void init() {
 
     for (int i = 0; i < 256; i++) keys[i] = false;
 
-    // 컵라면 객체 텍스처 로드 
+    //cup_noodle texture
     InitCupNoodleTextures();
-    // 물병 물 텍스처
+    // 물병 t
     InitWaterKettleTextures();
     // 배경
     InitSkybox();
@@ -85,7 +83,7 @@ void init() {
     InitWaterParticles();
     // 김 파티클
     InitSteamParticles();
-    // 토마토용 텍스쳐 ( 시각장애인 여기 있어서 로드 넣음 )
+    // 토마토용 텍스쳐 ( 시각장애인꺼 텍스쳐 여기 있어서 로드 넣음 )
     InitTextures();
 }
 

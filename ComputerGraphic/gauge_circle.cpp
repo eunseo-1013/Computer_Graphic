@@ -19,15 +19,13 @@ void drawCircularGauge(float cx, float cy,
     const float outerR = radius;
     const float PI = 3.1415926f;
 
-    // -------------------------
-    // 1) 전체 배경 링 (360도)
-    // -------------------------
+    // 회색 배경 링
     glColor3f(0.2f, 0.2f, 0.2f);
 
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 0; i <= segments; ++i) {
         float t = (float)i / (float)segments;   // 0 ~ 1
-        float angle = t * 2.0f * PI;           // 0 ~ 2π (방향 상관 없음, 그냥 원)
+        float angle = t * 2.0f * PI;           
 
         float xOuter = cx + cosf(angle) * outerR;
         float yOuter = cy + sinf(angle) * outerR;
@@ -39,19 +37,16 @@ void drawCircularGauge(float cx, float cy,
     }
     glEnd();
 
-    // -------------------------
-    // 2) 채워진 부분
-    //    - 12시(π/2)에서 시작
-    //    - 시계 방향으로 회전
-    // -------------------------
+
+    // 파란색 원! 
     glColor3f(0.0f, 0.7f, 1.0f);
 
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 0; i <= segments; ++i) {
-        float t = (float)i / (float)segments;  // 0 ~ 1
-        if (t > value) break;                  // value 비율만큼만 그림
+        float t = (float)i / (float)segments;  // 0 ~ 1 고정
+        if (t > value) break;                  // value 만큼
 
-        // angle = 시작각(12시 = π/2) - t * 2π  => 12시에서 시계방향으로 채워짐
+        //시계방향 채우기
         float angle = (PI / 2.0f) - t * 2.0f * PI;
 
         float xOuter = cx + cosf(angle) * outerR;
@@ -75,19 +70,19 @@ void display(void)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // 화면을 0~800, 0~600 좌표계로 사용 (왼쪽 아래가 (0,0))
+    
     gluOrtho2D(0.0, 800.0, 0.0, 600.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // 중심 (400, 300), 반지름 150, 두께 30
+  
     drawCircularGauge(400.0f, 300.0f, 150.0f, 30.0f, g_value);
 
     glutSwapBuffers();
 }
 
-// 마우스 콜백: 클릭하면 값 증가
+
 void mouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
@@ -97,7 +92,7 @@ void mouse(int button, int state, int x, int y)
         glutPostRedisplay();
     }
 
-    // ↓ 오른쪽 클릭으로 줄이고 싶으면 이거 풀면 됨
+  
     /*
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         g_value -= 0.1f;

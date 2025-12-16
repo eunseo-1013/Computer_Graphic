@@ -34,12 +34,12 @@ GLuint gLoadTexture(const char* filename)
 {
     AUX_RGBImageRec* img = LoadBMPT(filename);
     if (!img) {
-        printf("텍스처 파일을 읽을 수 없음: %s\n", filename);
+        printf("텍스처 로드 안됨: %s\n", filename);
         return false;
     }
 
-    printf("텍스처 로드 성공: %s (%d x %d)\n",
-        filename, (int)img->sizeX, (int)img->sizeY);
+    printf("텍스처 로드 성공: %s \n",
+        filename);
 
     GLuint TextureID;
 
@@ -60,7 +60,7 @@ GLuint gLoadTexture(const char* filename)
         img->data
     );
 
-    printf("%s 성공적 종료\n",filename);
+    printf("%s 로드됨\n",filename);
     return TextureID;
 }
 
