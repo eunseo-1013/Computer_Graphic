@@ -5,7 +5,6 @@ extern GLuint gNoiseTex1;
 extern GLuint gNoiseTex2;
 
 
-void SetupFog();
 
 void DrawNoiseOverlay(float alpha,int num);
 

@@ -6,7 +6,7 @@
 #include <gl/glut.h>
 #include <glaux.h>
 
-GLuint tex[6];   // Texture Mapping을 하기 위한 Texture 이미지의 개수를 위한 배열 변수
+GLuint tex[6];  
 
 AUX_RGBImageRec *LoadBMP(const char *Filename) {  // Bitmap 이미지를 호출한다.
      FILE *File=NULL;

@@ -10,7 +10,7 @@
 
 GLuint waterTextureID = -1;
 
-float waterY = 0.0f;     // 물이 떨어지는 y 위치
+float waterY = 0.0f;     
 bool isPouring = false;
 
 void loadTexture(void) {
@@ -68,34 +68,24 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
     float radTilt = tiltAngle * (M_PI / 180.0f);
     float tiltFactor = tan(radTilt) * topRadius;
 
-    // 동요 정도
     float agitation = std::min(1.0f, fabsf(tiltAngle) / 30.0f);
 
-    // 1. 옆면 그리기 (Triangle Strip으로 윗점, 아랫점 연결)
     glBegin(GL_TRIANGLE_STRIP);
     for (int i = 0; i <= slices; i++) {
         float angle = i * angleStep;
         float x = cos(angle);
         float y = sin(angle);
 
-        // 텍스처 좌표 (가로로 반복)
         float u = (float)i / slices;
 
-        // --- 아랫면 (고정) ---
-        // 바닥은 평평하므로 z = 0
         glNormal3f(x, y, 0.0f);
         glTexCoord2f(u, 0.0f);
         glVertex3f(bottomRadius * x, bottomRadius * y, 0.0f);
         
         float waterHeightChange = -x * tiltFactor;
 
-        // --- 윗면 (변형) ---
         float wave = 0.03f * agitation * sin(angle * 3.0f + time * 3.0f) * cos(angle * 2.0f + time);
         float currentH = height + waterHeightChange + wave;
-
-        // 물이 병 밖으로 튀어나가지 않게 (선택사항)
-        /*if (currentH > height + 0.3f) currentH = height + 0.3f;
-        if (currentH < height - 0.25f) currentH = height - 0.25f;*/
 
         glNormal3f(x, y, 0.0f);
         glTexCoord2f(u, 1.0f);
@@ -103,7 +93,6 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
     }
     glEnd();
 
-    // 2. 윗면 (수면) 뚜껑 닫기
     glBegin(GL_TRIANGLE_FAN);
     glNormal3f(0.0f, 0.0f, 1.0f);
 
@@ -111,7 +100,7 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
     glVertex3f(0.0f, 0.0f, height);
 
     for (int i = 0; i <= slices; i++) {
-        float angle = -i * angleStep; // 텍스처가 뒤집히지 않게 반대로 돌림 (선택)
+        float angle = -i * angleStep;
         float x = cos(angle);
         float y = sin(angle);
 
@@ -119,13 +108,11 @@ void DrawRealWater(float bottomRadius, float topRadius, float height, int slices
         float wave = 0.03f * agitation * sin(angle * 3.0f + time * 3.0f) * cos(angle * 2.0f + time);
         float currentH = height + waterHeightChange + wave;
 
-        // 텍스처 좌표 (원형 매핑)
         glTexCoord2f(0.5f + 0.5f * x, 0.5f + 0.5f * y);
         glVertex3f(topRadius * x, topRadius * y, currentH);
     }
     glEnd();
 
-    // 3. 아랫면 (바닥) 뚜껑 닫기
     glDisable(GL_TEXTURE_2D);
     glBegin(GL_TRIANGLE_FAN);
     glNormal3f(0.0f, 0.0f, -1.0f);
@@ -158,7 +145,6 @@ void DrawBlobShadowXZ(float x, float y, float z, float rx, float rz, float alpha
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // 바닥과 z-fighting 방지
     glDepthMask(GL_FALSE);
 
     glPushMatrix();
@@ -188,7 +174,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
 
     
 
-    float groundY = y - kettleLift; // 네 바닥 기준에 맞게 조절
+    float groundY = y - kettleLift;
 
     float lift01 = std::min(1.0f, std::max(0.0f, kettleLift / 0.5f));
 
@@ -197,7 +183,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     float alpha = minAlpha + (maxAlpha - minAlpha) * (1.0f - lift01);
 
     float rxMax = 0.22f, rzMax = 0.18f;
-    float rxMin = 0.22f, rzMin = 0.12f;  // ★ 떠있어도 남는 크기
+    float rxMin = 0.22f, rzMin = 0.12f; 
     float rx = rxMin + (rxMax - rxMin) * (1.0f - lift01);
     float rz = rzMin + (rzMax - rzMin) * (1.0f - lift01);
 
@@ -330,9 +316,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
     glutSolidCube(1.0f);
 
     glPopMatrix();
-    //// ==========================
-    //  // 7. 기울이면 나오는 물줄기
-    //  // ==========================
+    // 7. 물줄기
     if (tiltAngle > 40.0f) {
         isPouring = true;
     }
@@ -341,7 +325,7 @@ void DrawWaterKettle(float x, float y, float z, float time, float tiltAngle) {
             isPouring = false;
     }
 
-    glPopMatrix();   // 전체 포트 transform pop
+    glPopMatrix();  
     glPopAttrib();
     glPopMatrix();
 
@@ -356,7 +340,6 @@ void UpdateWaterKettle()
 
     bool keepLifting = kettleSelected || (fabs(kettleAngle) > 2.0f);
 
-    // 선택된 상태라면 위로
     if (keepLifting)
         kettleLift = std::min(0.5f, kettleLift + 0.02f);
     else

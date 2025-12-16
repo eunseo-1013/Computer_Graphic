@@ -195,9 +195,9 @@ void TomatoSceneDisplay()
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
     if (pov >= 3) {
-        DrawNoiseOverlay(0.7f, num);
+        DrawNoiseOverlay(0.95f, pov - 3); // t시각장애인용
     }
-   
+    
    
     glutSwapBuffers();
     
@@ -222,8 +222,8 @@ bool InitTextures()
 {
 
     gNoiseTex0 = gLoadTexture("texture/Particle.bmp");
-    gNoiseTex1 = gLoadTexture("texture/noise.bmp");
-    gNoiseTex2 = gLoadTexture("texture/noise2.bmp");
+    gNoiseTex1 = gLoadTexture("texture/blur.bmp");
+    gNoiseTex2 = gLoadTexture("texture/noise3.bmp");
     gLeafTex = gLoadTexture("texture/24leaf_texture.bmp");
     gSoilTex = gLoadTexture("texture/soild_texture.bmp");
     gStemTex = gLoadTexture("texture/stem_texture.bmp");

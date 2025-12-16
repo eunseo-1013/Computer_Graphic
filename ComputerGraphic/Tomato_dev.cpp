@@ -25,17 +25,13 @@
 
 
 
-//------------------------------
 // 텍스처 전역 변수
-//------------------------------
 GLuint gLeafTex = 0; // 잎 텍스처 번호
 GLuint gSoilTex = 0; // 흙 텍스처 번호
 GLuint gStemTex = 0;
 
 
-//------------------------------
 // 조명 설정
-//------------------------------
 void SetupLighting()
 {
     glEnable(GL_LIGHTING);
@@ -60,9 +56,7 @@ void SetupLighting()
 
 
 
-//------------------------------
 // 마우스 회전 관련
-//------------------------------
 float angleX = 0.0f;
 float angleY = 0.0f;
 int prevX, prevY;
@@ -71,14 +65,12 @@ bool isDragging = false;
 // GLU Quadric
 GLUquadric* quad = NULL;
 
-//------------------------------
 // 1. 화분 및 흙
-//------------------------------
 
 void FlowerPot(float size) {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glDisable(GL_TEXTURE_2D);
-    // ----- 0. 조명 상태 백업 -----
+
     GLfloat oldAmb[4], oldDiff[4], oldSpec[4];
     glGetLightfv(GL_LIGHT0, GL_AMBIENT, oldAmb);
     glGetLightfv(GL_LIGHT0, GL_DIFFUSE, oldDiff);
@@ -91,9 +83,6 @@ void FlowerPot(float size) {
     glLightfv(GL_LIGHT0, GL_AMBIENT, potAmb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, potDiff);
     glLightfv(GL_LIGHT0, GL_SPECULAR, potSpec);
-
-    // ----- 2. 화분 재질 설정 (specular 0, 하이라이트 없음) -----
-    //glDisable(GL_COLOR_MATERIAL);    // glColor 영향 끄고 재질로만 색 지정
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
@@ -117,9 +106,9 @@ void FlowerPot(float size) {
         quad = gluNewQuadric();
 
     glPushMatrix();
-   // glColor3f(0.6f, 0.3f, 0.2f);
+    // glColor3f(0.6f, 0.3f, 0.2f);
     // SolidCone 높이 = size + 1
-    float topZ = (size) * 0.10f; // ← 클립된 상단 실제 위치에 맞춰 보정
+    float topZ = (size) * 0.10f; // 클립된 상단 실제 위치에 맞춰 보정
 
     glTranslatef(0, 0, -topZ);
 
@@ -140,8 +129,7 @@ void FlowerPot(float size) {
 
     glPushMatrix();
     //glColor3f(0.6f, 0.3f, 0.2f);
-    // SolidCone 높이 = size + 1
-    topZ = (size) * 0.67f; // ← 클립된 상단 실제 위치에 맞춰 보정
+    topZ = (size) * 0.67f;
 
     glTranslatef(0, 0, topZ*2);
 
@@ -156,7 +144,6 @@ void FlowerPot(float size) {
     gluCylinder(quad, rimInner, rimInner, rimH, 30, 1);
 
     glPopMatrix();
-    // ----- 4. 상태 원복 -----
     glEnable(GL_COLOR_MATERIAL);
     glColor3f(1.0f, 1.0f, 1.0f); // 다음 물체에 색 안 묻도록
 
@@ -180,7 +167,7 @@ void Soild() {
     }
 
     // 게이지가 올라갈수록 factor가 작아져서 어두워짐
-    float factor = 1.0f - 0.5f * g_value;        // g=0 → 1.0, g=1 → 0.3
+    float factor = 1.0f - 0.5f * g_value;        // g=0 -> 1.0, g=1 -> 0.3
     if (factor < 0.0f) factor = 0.0f;
 
     glEnable(GL_TEXTURE_2D);
@@ -212,9 +199,7 @@ void Soild() {
     glDisable(GL_TEXTURE_2D);
 }
 
-//------------------------------
-// 2. 줄기 및 잎
-//------------------------------
+// 줄기 및 잎
 void Stem(float r, float h, float slice = 30) {
     if (!quad) {
         quad = gluNewQuadric();
@@ -225,22 +210,13 @@ void Stem(float r, float h, float slice = 30) {
     glBindTexture(GL_TEXTURE_2D, gStemTex);    // 줄기 텍스처
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-    // 텍스처가 원통 전체에 꽉 차게 / 반복되게
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // ★ 여기서 꼭 켜야 GLU가 텍스처 좌표를 만들어 줌
     gluQuadricTexture(quad, GL_TRUE);
 
     glColor3f(0.0f, 0.58f, 0.0f); // 줄기 기본 색
     gluQuadricDrawStyle(quad, GLU_FILL);
-    /*
-    // ─ 텍스처 더 자주/덜 자주 반복시키고 싶을 때: 텍스처 행렬 스케일 ─
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    // t방향을 3배 늘려서 세로 방향으로 무늬가 더 많이 반복되게 (취향대로 수정)
-    glScalef(1.0f, 3.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);*/ 
 
     gluCylinder(quad, r, r-0.025, h, slice, 1);
 
@@ -249,13 +225,12 @@ void Stem(float r, float h, float slice = 30) {
     //glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 
-    // 다른 도형에 영향 안 가게 정리
     gluQuadricTexture(quad, GL_FALSE);
     glDisable(GL_TEXTURE_2D);
 }
 
 
-// 토마토 꼭대기 작은 잎(삼각형) - 텍스처 사용
+// 토마토 꼭대기 작은 잎
 void TomatoLeaf() {
     glRotatef(90, -1, 0, 0);
 
@@ -291,20 +266,18 @@ void TomatoCapLeaves(float r) {
     }
 }
 
-// 토마토 본체(구)
+// 토마토 본체
 void Tomato(float r) {
     glPushMatrix();
 
-    // 토마토 구는 텍스처 없이 재질/조명으로만
     glDisable(GL_TEXTURE_2D);
 
     glDisable(GL_COLOR_MATERIAL);
-    GLfloat matAmbient[] = { 0.35f, 0.05f, 0.05f, 1.0f };  // 톤 유지
-    GLfloat matDiffuse[] = { 0.85f, 0.18f, 0.18f, 1.0f };  // 붉은 채도 유지
-    GLfloat matSpecular[] = { 0.5f, 0.6f, 0.5f, 1.0f };     // ★ 약한 하이라이트
+    GLfloat matAmbient[] = { 0.35f, 0.05f, 0.05f, 1.0f };  
+    GLfloat matDiffuse[] = { 0.85f, 0.18f, 0.18f, 1.0f };  
+    GLfloat matSpecular[] = { 0.5f, 0.6f, 0.5f, 1.0f };     
     GLfloat matShininess[] = { 35.0f };
 
-    // 살짝 스스로 빛나는 느낌
     GLfloat matEmission[] = { 0.2f, 0.03f, 0.03f, 1.0f };
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
@@ -330,7 +303,7 @@ void Tomato(float r) {
     glPopMatrix();
 }
 
-// 큰 잎(브랜치 잎) – 이미 잘 되어 있어서 텍스처 켰다가 끄기만 추가
+// 큰 잎
 void DrawTomatoLeaf(float len, float wid) {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, gLeafTex);
@@ -379,7 +352,7 @@ void DrawTomatoLeaf(float len, float wid) {
     glVertex3f(0.0f, length, 0.0f);
     glEnd();
 
-    glDisable(GL_TEXTURE_2D);   // ★ 다음 물체에 텍스처 안 묻도록
+    glDisable(GL_TEXTURE_2D);  
 }
 
 // 토마토 + 가지 묶음

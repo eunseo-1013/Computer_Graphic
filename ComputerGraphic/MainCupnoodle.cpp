@@ -130,9 +130,9 @@ void display() {
 
     DrawCrosshair();
     if (pov >= 3) {
-        DrawNoiseOverlay(0.7f, pov - 3); // t시각장애인용
+        DrawNoiseOverlay(0.95f, pov - 3); // t시각장애인용
     }
-   
+    
     glutSwapBuffers();
 }
 

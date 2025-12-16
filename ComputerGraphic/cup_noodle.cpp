@@ -384,4 +384,4 @@ void DrawCupNoodleScene() {
     glPopMatrix();
     //glPopMatrix();
     glPopAttrib();
-}¤±
+}

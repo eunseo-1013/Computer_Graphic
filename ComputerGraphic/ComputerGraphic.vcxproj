@@ -152,7 +152,6 @@
     <ClCompile Include="eye.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="gauge_circle.cpp" />
-    <ClCompile Include="hand.cpp" />
     <ClCompile Include="cup_noodle.cpp" />
     <ClCompile Include="loadTexture.cpp" />
     <ClCompile Include="MainCupnoodle.cpp" />
